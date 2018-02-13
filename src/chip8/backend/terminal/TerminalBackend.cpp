@@ -33,7 +33,7 @@ namespace chip8
 			auto line = fb.GetLine(y);
 			for(unsigned x = 0; x < chipW; x += denom)
 			{
-				auto value = line[x] & ~Framebuffer::DirtyBit;
+				auto value = line[x] &= ~Framebuffer::DirtyBit;
 				printf("\e[%dm ", value + 40);
 			}
 		}

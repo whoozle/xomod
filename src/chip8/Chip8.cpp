@@ -40,19 +40,19 @@ namespace chip8
 	void Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)
 	{
 		bool collision = false;
+		u16 i = _i;
 		if (h == 0) //16x16 mode
 		{
-			h = 16;
-			while(h--)
+			for(h = 16; h--; ++y)
 			{
-				collision |= _framebuffer.Write(plane, y, x, _memory.Get(_i++));
-				collision |= _framebuffer.Write(plane, y++, x + 1, _memory.Get(_i++));
+				collision |= _framebuffer.Write(plane, y, x, _memory.Get(i++));
+				collision |= _framebuffer.Write(plane, y, x + 1, _memory.Get(i++));
 			}
 		}
 		else
 		{
 			while(h--)
-				collision |= _framebuffer.Write(plane, y++, x, _memory.Get(_i++));
+				collision |= _framebuffer.Write(plane, y++, x, _memory.Get(i++));
 		}
 		_reg[VF] = collision? 1: 0;
 	}
