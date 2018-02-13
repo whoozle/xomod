@@ -56,6 +56,7 @@ namespace chip8
 					}
 					else
 						pixel |= planeMask;
+					pixel |= DirtyBit;
 				}
 			}
 			return collision;
