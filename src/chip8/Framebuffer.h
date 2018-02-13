@@ -30,7 +30,10 @@ namespace chip8
 		void Reset()
 		{ SetResolution(32, 16); }
 
-		void Invalidate() { }
+		void Invalidate() {
+			for(auto & pixel : _data)
+				pixel |= DirtyBit;
+		}
 
 		bool Write(u8 plane, u8 y, u8 x, u8 value)
 		{
