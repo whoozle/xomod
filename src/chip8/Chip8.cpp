@@ -83,6 +83,7 @@ namespace chip8
 						break;
 					case 0xff: //hires
 						_framebuffer.SetResolution(64, 32);
+						_framebuffer.Clear(); //quirks: some game bug-2-bug compatible with octo
 						break;
 					default:
 						InvalidOp(op);
