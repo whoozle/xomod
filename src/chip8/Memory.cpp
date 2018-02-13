@@ -44,6 +44,7 @@ namespace chip8
 		};
 		std::copy(font, font + FontSize, _data.data() + FontOffset);
 		std::copy(bigFont, bigFont + BigFontSize, _data.data() + BigFontOffset);
+		std::fill(_data.begin() + BigFontOffset, _data.end(), 0);
 	}
 
 }

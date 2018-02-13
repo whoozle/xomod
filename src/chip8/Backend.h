@@ -11,11 +11,11 @@ namespace chip8
 	class Backend
 	{
 	public:
-		virtual void Render(const Framebuffer & fb) = 0;
+		virtual void Render(Framebuffer & fb) = 0;
 		virtual ~Backend() { }
 
 
-		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, int displayW, int displayH, int chipW, int chipH)
+		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, unsigned displayW, unsigned displayH, unsigned chipW, unsigned chipH)
 		{
 			if (displayW >= chipW && displayH >= chipH) //zoom out
 			{

@@ -8,7 +8,7 @@ namespace chip8
 	class TerminalBackend : public Backend
 	{
 	public:
-		void Render(const Framebuffer & fb);
+		void Render(Framebuffer & fb) override;
 	};
 }
 

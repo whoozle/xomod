@@ -39,7 +39,7 @@ namespace chip8
 
 	void Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)
 	{
-		bool collision;
+		bool collision = false;
 		if (h == 0) //16x16 mode
 		{
 			h = 16;
@@ -83,7 +83,6 @@ namespace chip8
 						break;
 					case 0xff: //hires
 						_framebuffer.SetResolution(64, 32);
-						_framebuffer.Clear(); //quirks: some game bug-2-bug compatible with octo
 						break;
 					default:
 						InvalidOp(op);
@@ -173,17 +172,19 @@ namespace chip8
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
+				u8 xp = _reg[x];
+				u8 yp = _reg[y];
 				switch(_planes)
 				{
 					case 1:
-						Sprite(0, x, y, z);
+						Sprite(0, xp, yp, z);
 						break;
 					case 2:
-						Sprite(1, x, y, z);
+						Sprite(1, xp, yp, z);
 						break;
 					case 3:
-						Sprite(0, x, y, z);
-						Sprite(1, x, y, z);
+						Sprite(0, xp, yp, z);
+						Sprite(1, xp, yp, z);
 						break;
 				}
 			}
