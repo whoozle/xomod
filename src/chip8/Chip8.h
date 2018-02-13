@@ -7,7 +7,8 @@ namespace chip8
 {
 	class Chip8
 	{
-		static constexpr unsigned InstructionsPerStep = 1000;
+		static constexpr unsigned InstructionsPerStep	= 1000;
+		static constexpr unsigned EntryPoint			= 0x200;
 
 	private:
 		Memory	_memory;
@@ -24,10 +25,12 @@ namespace chip8
 		void Reset()
 		{
 			_memory.Reset();
-			_pc = 0x200;
+			_pc = EntryPoint;
 		}
 
 		void Tick();
+		void Load(const u8 * data, size_t dataSize);
+
 	private:
 		void Step();
 	};

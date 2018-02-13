@@ -1,6 +1,7 @@
 #include <chip8/Chip8.h>
 #include <chrono>
-
+#include <string>
+#include <stdexcept>
 
 namespace chip8
 {
@@ -31,6 +32,24 @@ namespace chip8
 	}
 
 	void Chip8::Step()
-	{ }
+	{
+		u8 h = _memory.Get(_pc++);
+		u8 l = _memory.Get(_pc++);
+		u16 op = (static_cast<u16>(h) << 8) | l;
+		u8 group = h >> 4;
+		u8 hl = h & 0x0f;
+		switch(group)
+		{
+			default:
+				throw std::runtime_error("invalid instruction group " + std::to_string(group));
+		}
+	}
+
+	void Chip8::Load(const u8 * data, size_t dataSize)
+	{
+		size_t n = std::min<size_t>(dataSize, 0x10000 - EntryPoint);
+		u8 *dst = _memory.GetData() + EntryPoint;
+		std::copy(data, data + n, dst);
+	}
 
 }
