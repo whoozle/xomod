@@ -32,6 +32,8 @@ namespace chip8
 			//printf("%u instruction per tick, %g instruction per second\n", counter, counter * 60 / (dt / 1000000.0));
 			checkpoint += std::chrono::microseconds(static_cast<unsigned>(TimerPeriodMs));
 		}
+		if (_delay)
+			--_delay;
 	}
 
 	void Chip8::Step()
@@ -52,6 +54,11 @@ namespace chip8
 				{
 					case 0xe0: //clear
 						_framebuffer.Clear();
+						break;
+					case 0xee: //ret
+						if (_sp == 0)
+							InvalidOp(op); //stack overflow, replace method
+						_pc = _stack[--_sp];
 						break;
 					case 0xff: //hires
 						_framebuffer.SetResolution(64, 32);
@@ -86,6 +93,29 @@ namespace chip8
 			if (_reg[x] != nn)
 				SkipNext();
 			break;
+		case 0x05: //SXX VX, VY
+			{
+				u8 y = nn >> 4;
+				u8 z = nn & 0x0f;
+				switch(z)
+				{
+				case 0: //SE VX, VY
+					if (_reg[x] == _reg[y])
+						SkipNext();
+					break;
+
+				case 2: //SAVE VX-VY range
+					SaveRange(x, y);
+					break;
+
+				case 3: //LOAD VX-VY range
+					LoadRange(x, y);
+					break;
+
+				default:
+					InvalidOp(op);
+				}
+			}
 
 		case 0x06: //LD VX, NN
 			_reg[x] = nn;
@@ -113,6 +143,10 @@ namespace chip8
 				}
 			}
 
+		case 0x0a: //MOV I, NNN
+			_i = (static_cast<u16>(x) << 8) | nn;
+			break;
+
 		case 0x0d: //sprite
 			break;
 
@@ -125,13 +159,36 @@ namespace chip8
 				else
 					InvalidOp(op);
 				break;
+
 			case 0x01: //plane
 				_planes = x;
 				_framebuffer.Invalidate();
 				break;
 
+			case 0x02: //audio
+				break;
+
+			case 0x07: //vX = delay
+				_reg[x] = _delay;
+				break;
+
+			case 0x15: //delay vX
+				_delay = _reg[x];
+				break;
+
+			case 0x18: //buzzer vX
+				break;
+
 			case 0x1e: //i += vX
 				_i += _reg[x];
+				break;
+
+			case 0x55: //save v0-vX
+				SaveRange(0, x); _i += x; //quirks
+				break;
+
+			case 0x65: //load v0-vX
+				LoadRange(0, x); _i += x;
 				break;
 
 			default:

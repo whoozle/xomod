@@ -23,6 +23,7 @@ namespace chip8
 		u16					_pc, _i;
 		u8					_sp;
 		u8					_planes;
+		u8					_delay;
 
 		void WriteResult(u8 reg, u8 value, bool carry)
 		{
@@ -34,6 +35,22 @@ namespace chip8
 		{
 			u16 next = (static_cast<u16>(_memory.Get(_pc)) << 8) | _memory.Get(_pc + 1);
 			_pc += (next == 0xf000)? 4: 2; //skip long assingment
+		}
+
+		void SaveRange(u8 x, u8 y)
+		{
+			if (x < y)
+				for(u8 i = 0; i < y - x; ++i) _memory.Set(_i + i, _reg[x + i]);
+			else
+				for(u8 i = 0; i < x - y; ++i) _memory.Set(_i + i, _reg[y + i]);
+		}
+
+		void LoadRange(u8 x, u8 y)
+		{
+			if (x < y)
+				for(u8 i = 0; i < y - x; ++i) _reg[x + i] = _memory.Get(_i + i);
+			else
+				for(u8 i = 0; i < x - y; ++i) _reg[y + i] = _memory.Get(_i + i);
 		}
 
 	public:
@@ -49,6 +66,7 @@ namespace chip8
 			_pc = EntryPoint;
 			_sp = 0;
 			_planes = 1;
+			_delay = 0;
 		}
 
 		void Tick();
