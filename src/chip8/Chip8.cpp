@@ -35,13 +35,51 @@ namespace chip8
 	{
 		u8 h = _memory.Get(_pc++);
 		u8 l = _memory.Get(_pc++);
-		u16 op = (static_cast<u16>(h) << 8) | l;
 		u8 group = h >> 4;
 		u8 hl = h & 0x0f;
+		u16 op = (static_cast<u16>(h) << 8) | l; //remove it
+
 		switch(group)
 		{
+		case 0:
+			switch(hl)
+			{
+			case 0:
+				switch(l)
+				{
+					case 0xe0: //clear
+						break;
+					case 0xff: //hires
+						break;
+					default:
+						throw std::runtime_error("invalid instruction " + std::to_string(op));
+				}
+				break;
+
 			default:
-				throw std::runtime_error("invalid instruction group " + std::to_string(group));
+				throw std::runtime_error("invalid instruction " + std::to_string(op));
+			}
+			break;
+
+		case 2:
+			if (_sp >= _stack.size())
+				throw std::runtime_error("stack overflow");
+			_stack[_sp++] = _pc;
+			_pc = (static_cast<u16>(hl) << 8) | l;
+			break;
+
+		case 0x0f:
+			switch(l)
+			{
+			case 0x01: //plane
+				break;
+			default:
+				throw std::runtime_error("invalid instruction " + std::to_string(op));
+			}
+			break;
+
+		default:
+			throw std::runtime_error("invalid instruction " + std::to_string(op));
 		}
 	}
 
