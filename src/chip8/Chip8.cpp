@@ -43,6 +43,7 @@ namespace chip8
 		u16 i = _i;
 		if (h == 0) //16x16 mode
 		{
+			i += 32 * plane;
 			for(h = 16; h--; ++y)
 			{
 				collision |= _framebuffer.Write(plane, y, x, _memory.Get(i++));
@@ -51,6 +52,7 @@ namespace chip8
 		}
 		else
 		{
+			i += h * plane;
 			while(h--)
 				collision |= _framebuffer.Write(plane, y++, x, _memory.Get(i++));
 		}
