@@ -27,7 +27,7 @@ namespace chip8
 			else {
 				//test me
 				num = 1;
-				denom = std::max((chipW + displayW - 1) / displayW, (displayH + chipH - 1) / chipH);
+				denom = 1 + std::max((chipW + displayW - 1) / displayW, (chipH + displayH - 1) / chipH);
 				offsetX = (displayW - chipW / denom) / 2;
 				offsetY = (displayH - chipH / denom) / 2;
 			}
