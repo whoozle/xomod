@@ -1,4 +1,5 @@
 #include <chip8/Chip8.h>
+#include <chip8/String.h>
 #include <chrono>
 #include <string>
 #include <stdexcept>
@@ -26,7 +27,7 @@ namespace chip8
 				now = clock::now();
 				dt = std::chrono::duration_cast<std::chrono::microseconds>(now - checkpoint).count();
 			} while(dt < TimerPeriodMs);
-			printf("%u instruction per tick, %g instruction per second\n", counter, counter * 60 / (dt / 1000000.0));
+			//printf("%u instruction per tick, %g instruction per second\n", counter, counter * 60 / (dt / 1000000.0));
 			checkpoint += std::chrono::microseconds(static_cast<unsigned>(TimerPeriodMs));
 		}
 	}
@@ -52,12 +53,12 @@ namespace chip8
 					case 0xff: //hires
 						break;
 					default:
-						throw std::runtime_error("invalid instruction " + std::to_string(op));
+						throw std::runtime_error("invalid instruction " + ToHex(op));
 				}
 				break;
 
 			default:
-				throw std::runtime_error("invalid instruction " + std::to_string(op));
+				throw std::runtime_error("invalid instruction " + ToHex(op));
 			}
 			break;
 
@@ -74,12 +75,12 @@ namespace chip8
 			case 0x01: //plane
 				break;
 			default:
-				throw std::runtime_error("invalid instruction " + std::to_string(op));
+				throw std::runtime_error("invalid instruction " + ToHex(op));
 			}
 			break;
 
 		default:
-			throw std::runtime_error("invalid instruction " + std::to_string(op));
+			throw std::runtime_error("invalid instruction " + ToHex(op));
 		}
 	}
 
