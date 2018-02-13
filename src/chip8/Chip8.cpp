@@ -82,7 +82,7 @@ namespace chip8
 						_pc = _stack[--_sp];
 						break;
 					case 0xff: //hires
-						_framebuffer.SetResolution(64, 32);
+						_framebuffer.SetResolution(128, 64);
 						break;
 					default:
 						InvalidOp(op);

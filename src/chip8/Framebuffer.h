@@ -10,7 +10,7 @@ namespace chip8
 	class Framebuffer
 	{
 	public:
-		static constexpr u8 MaxWidth = 128; //chip10
+		static constexpr u8 MaxWidth = 128; //chip8 hires
 		static constexpr u8 MaxHeight = 64;
 		static constexpr size_t MaxSize = MaxWidth * MaxHeight;
 		static constexpr u8 DirtyBit = 0x80;
@@ -56,14 +56,12 @@ namespace chip8
 			y %= _h;
 			u16 base_offset = y * _w;
 
-			printf("WRite %u %u %u %02x\n", plane, y, x, value);
 			for(u8 w = 8, srcMask = 0x80; w--; srcMask >>= 1)
 			{
 				size_t offset = base_offset + (x++ % _w); //fixme: quirks, clip
 
-				u8 &pixel = _data[offset];
 				if (value & srcMask) { //src pixel set
-					printf("WriteLine %u %u %u %02x -> %u\n", plane, y, x, value, value & srcMask);
+					u8 pixel = _data[offset];
 					if (pixel & planeMask) //dst pixel set
 					{
 						pixel ^= planeMask;
@@ -72,6 +70,7 @@ namespace chip8
 					}
 					else
 						pixel |= planeMask | DirtyBit;
+					_data[offset] = pixel;
 				}
 			}
 			return collision;

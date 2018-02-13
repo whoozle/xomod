@@ -9,11 +9,21 @@ namespace chip8
 	void TerminalBackend::Render(Framebuffer & fb)
 	{
 		struct winsize w;
-		if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) != 0)
-			return;
-
 		int chipW = fb.GetWidth();
 		int chipH = fb.GetHeight();
+
+		u8 * data = fb.GetLine(0);
+		printf("PAINT\n");
+		for(int i = 0; i < chipH; ++i) {
+			for(int j = 0; j < chipW; ++j) {
+				printf("%c", (*data & ~Framebuffer::DirtyBit) + '0');
+				++data;
+			}
+			printf("\n");
+		}
+
+		if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) != 0)
+			return;
 
 		printf("terminal size %dx%d, fbsize: %dx%d\n", w.ws_col, w.ws_row, chipW, chipH);
 		if (w.ws_col <= 0 || w.ws_row <= 0)
