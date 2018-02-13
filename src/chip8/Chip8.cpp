@@ -6,6 +6,8 @@
 
 namespace chip8
 {
+	void Chip8::InvalidOp(u16 op)
+	{ throw std::runtime_error("invalid instruction " + ToHex(op)); }
 
 	void Chip8::Tick()
 	{
@@ -35,52 +37,110 @@ namespace chip8
 	void Chip8::Step()
 	{
 		u8 h = _memory.Get(_pc++);
-		u8 l = _memory.Get(_pc++);
+		u8 nn = _memory.Get(_pc++);
 		u8 group = h >> 4;
-		u8 hl = h & 0x0f;
-		u16 op = (static_cast<u16>(h) << 8) | l; //remove it
+		u8 x = h & 0x0f;
+		u16 op = (static_cast<u16>(h) << 8) | nn; //remove it
 
 		switch(group)
 		{
-		case 0:
-			switch(hl)
+		case 0x00:
+			switch(x)
 			{
-			case 0:
-				switch(l)
+			case 0x00:
+				switch(nn)
 				{
 					case 0xe0: //clear
+						_framebuffer.Clear();
 						break;
 					case 0xff: //hires
+						_framebuffer.SetResolution(64, 32);
 						break;
 					default:
-						throw std::runtime_error("invalid instruction " + ToHex(op));
+						InvalidOp(op);
 				}
 				break;
 
 			default:
-				throw std::runtime_error("invalid instruction " + ToHex(op));
+				InvalidOp(op);
 			}
 			break;
 
-		case 2:
+		case 0x01: //jump NNN
+			_pc = (static_cast<u16>(x) << 8) | nn;
+			break;
+
+		case 0x02: //call NNN
 			if (_sp >= _stack.size())
 				throw std::runtime_error("stack overflow");
 			_stack[_sp++] = _pc;
-			_pc = (static_cast<u16>(hl) << 8) | l;
+			_pc = (static_cast<u16>(x) << 8) | nn;
+			break;
+
+		case 0x03: //SE VX, NN
+			if (_reg[x] == nn)
+				SkipNext();
+			break;
+
+		case 0x04: //SNE VX, NN
+			if (_reg[x] != nn)
+				SkipNext();
+			break;
+
+		case 0x06: //LD VX, NN
+			_reg[x] = nn;
+			break;
+
+		case 0x07:
+			_reg[x] += nn;
+			break;
+
+		case 0x08: //arithmetics
+			{
+				u8 y = nn >> 4;
+				u8 z = nn & 0x0f;
+				switch(z)
+				{
+				case 0x00: _reg[x]  = _reg[y]; break;
+				case 0x01: _reg[x] |= _reg[y]; break;
+				case 0x02: _reg[x] &= _reg[y]; break;
+				case 0x03: _reg[x] ^= _reg[y]; break;
+				case 0x04: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
+				case 0x05: { u8 r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
+				case 0x07: { u8 r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
+				case 0x06: { u8 r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
+				case 0x0e: { u8 r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
+				}
+			}
+
+		case 0x0d: //sprite
 			break;
 
 		case 0x0f:
-			switch(l)
+			switch(nn)
 			{
-			case 0x01: //plane
+			case 0x00:
+				if (x == 0)
+					{ u8 h = _memory.Get(_pc++); u8 l = _memory.Get(_pc++); _i = (static_cast<u16>(h) << 8) | l; }
+				else
+					InvalidOp(op);
 				break;
+			case 0x01: //plane
+				_planes = x;
+				_framebuffer.Invalidate();
+				break;
+
+			case 0x1e: //i += vX
+				_i += _reg[x];
+				break;
+
 			default:
-				throw std::runtime_error("invalid instruction " + ToHex(op));
+				InvalidOp(op);
 			}
 			break;
 
 		default:
-			throw std::runtime_error("invalid instruction " + ToHex(op));
+			InvalidOp(op);
 		}
 	}
 
