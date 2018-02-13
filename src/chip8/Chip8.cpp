@@ -37,6 +37,26 @@ namespace chip8
 		_backend.Render(_framebuffer);
 	}
 
+	void Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)
+	{
+		bool collision;
+		if (h == 0) //16x16 mode
+		{
+			h = 16;
+			while(h--)
+			{
+				collision |= _framebuffer.Write(plane, y, x, _memory.Get(_i++));
+				collision |= _framebuffer.Write(plane, y++, x + 1, _memory.Get(_i++));
+			}
+		}
+		else
+		{
+			while(h--)
+				collision |= _framebuffer.Write(plane, y++, x, _memory.Get(_i++));
+		}
+		_reg[VF] = collision? 1: 0;
+	}
+
 	void Chip8::Step()
 	{
 		u8 h = _memory.Get(_pc++);
@@ -149,6 +169,23 @@ namespace chip8
 			break;
 
 		case 0x0d: //sprite
+			{
+				u8 y = nn >> 4;
+				u8 z = nn & 0x0f;
+				switch(_planes)
+				{
+					case 1:
+						Sprite(0, x, y, z);
+						break;
+					case 2:
+						Sprite(1, x, y, z);
+						break;
+					case 3:
+						Sprite(0, x, y, z);
+						Sprite(1, x, y, z);
+						break;
+				}
+			}
 			break;
 
 		case 0x0f:
