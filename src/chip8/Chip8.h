@@ -8,6 +8,8 @@
 
 namespace chip8
 {
+	class Backend;
+
 	class Chip8
 	{
 		static constexpr unsigned InstructionsPerStep	= 1000;
@@ -15,6 +17,7 @@ namespace chip8
 		static constexpr u8 VF							= 0x0f;
 
 	private:
+		Backend &			_backend;
 		Memory				_memory;
 		Framebuffer			_framebuffer;
 
@@ -57,7 +60,7 @@ namespace chip8
 		static constexpr unsigned TimerFreq = 60;
 		static constexpr unsigned TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8() //pass backend here
+		Chip8(Backend & backend): _backend(backend)
 		{ Reset(); }
 
 		void Reset()

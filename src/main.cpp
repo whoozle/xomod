@@ -1,4 +1,5 @@
 #include <chip8/Chip8.h>
+#include <chip8/backend/terminal/TerminalBackend.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -14,7 +15,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	Chip8 chip;
+	TerminalBackend backend;
+	Chip8 chip(backend);
 
 	{
 		std::ifstream file(argv[1], std::ios::binary | std::ios::ate);
