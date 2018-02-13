@@ -168,6 +168,10 @@ namespace chip8
 			_i = (static_cast<u16>(x) << 8) | nn;
 			break;
 
+		case 0x0b: //JUMP0 NNN
+			_pc = ((static_cast<u16>(x) << 8) | nn) + _reg[0];
+			break;
+
 		case 0x0d: //sprite
 			{
 				u8 y = nn >> 4;
