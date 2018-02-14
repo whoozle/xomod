@@ -11,15 +11,15 @@ namespace chip8
 	namespace
 	{
 		//bits numbered as follows:
-		//3 2
-		//1 0
+		//0 1
+		//2 3
 		
 		const char * sub2x2[16] =
 		{
-			"█", "▛", "▜", "▀",
-			"▙", "▌", "▚", "▘",
-			"▟", "▞", "▐", "▝",
-			"▄", "▖", "▗", " ",
+			" ", "▗", "▖", "▄",
+			"▝", "▐", "▞", "▟",
+			"▘", "▚", "▌", "▙",
+			"▀", "▜", "▛", "█",
 		};
 
 		template<uint N>
@@ -58,13 +58,13 @@ namespace chip8
 				for(auto & row : _data)
 					for(auto & color : row)
 					{
-						u8 bit;
-						if (color == color1)
-							bit = 1;
-						else if (color == color2)
-							bit = 0;
-						else
-							bit = index++ & 1;
+						u8 bit = color? 1: 0;
+//						if (color == color1)
+//							bit = 1;
+//						else if (color == color2)
+//							bit = 0;
+//						else
+//							bit = index++ & 1;
 						mask <<= 1;
 						mask |= bit;
 					}
@@ -94,20 +94,20 @@ namespace chip8
 		if (denom == 2)
 		{
 			std::vector<u8 *> lines(denom);
-			for(unsigned y = 0; y < chipH; y += denom, ++offsetY)
+			for(int y = 0; y < chipH; y += denom, ++offsetY)
 			{
 				SetCursor(offsetY, offsetX);
 
-				for(unsigned subY = 0; subY < denom; ++subY)
+				for(int subY = 0; subY < denom; ++subY)
 					lines[subY] = fb.GetLine(y + subY);
 
 				Sample<2> sample;
-				for(unsigned x = 0; x < chipW; x += denom)
+				for(int x = 0; x < chipW; x += denom)
 				{
-					for(unsigned subY = 0; subY < denom; ++subY)
+					for(int subY = 0; subY < denom; ++subY)
 					{
 						auto &line = lines[subY];
-						for(unsigned subX = 0; subX < denom; ++subX)
+						for(int subX = 0; subX < denom; ++subX)
 						{
 							u8 value = line[x + subX] &= ~Framebuffer::DirtyBit;
 							sample[subY][subX] = value;
@@ -116,17 +116,17 @@ namespace chip8
 
 					u8 color1, color2, mask;
 					std::tie(color1, color2, mask) = sample.Quantize();
-					Print(sub2x2[mask], color1, color2);
+					Print(sub2x2[mask], 0, 7);
 				}
 			}
 		}
 		else
 		{
-			for(unsigned y = 0; y < chipH; y += denom, ++offsetY)
+			for(int y = 0; y < chipH; y += denom, ++offsetY)
 			{
 				SetCursor(offsetY, offsetX);
 				auto line = fb.GetLine(y);
-				for(unsigned x = 0; x < chipW; x += denom)
+				for(int x = 0; x < chipW; x += denom)
 				{
 					auto value = line[x] &= ~Framebuffer::DirtyBit;
 					Print(" ", value);
