@@ -9,6 +9,7 @@ namespace chip8
 	{
 	public:
 		void Render(Framebuffer & fb) override;
+		bool GetKeyState(u8 index);
 
 	private:
 		void SetCursor(int y, int x);

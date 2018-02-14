@@ -11,9 +11,9 @@ namespace chip8
 	class Backend
 	{
 	public:
-		virtual void Render(Framebuffer & fb) = 0;
 		virtual ~Backend() { }
-
+		virtual void Render(Framebuffer & fb) = 0;
+		virtual bool GetKeyState(u8 index) = 0;
 
 		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, uint displayW, uint displayH, uint chipW, uint chipH)
 		{

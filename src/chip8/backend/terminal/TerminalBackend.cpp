@@ -73,6 +73,9 @@ namespace chip8
 		};
 	}
 
+	bool TerminalBackend::GetKeyState(u8 index)
+	{ return false; }
+
 	void TerminalBackend::Render(Framebuffer & fb)
 	{
 		struct winsize w;

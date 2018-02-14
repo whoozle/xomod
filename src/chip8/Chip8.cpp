@@ -140,6 +140,7 @@ namespace chip8
 					InvalidOp(op);
 				}
 			}
+			break;
 
 		case 0x06: //LD VX, NN
 			_reg[x] = nn;
@@ -207,6 +208,22 @@ namespace chip8
 						Sprite(1, xp, yp, z);
 						break;
 				}
+			}
+			break;
+
+		case 0x0e:
+			switch(nn)
+			{
+			case 0x9e:
+				if (_backend.GetKeyState(_reg[x]))
+					SkipNext();
+				break;
+			case 0xa1:
+				if (!_backend.GetKeyState(_reg[x]))
+					SkipNext();
+				break;
+			default:
+				InvalidOp(op);
 			}
 			break;
 
