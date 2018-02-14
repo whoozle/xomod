@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
+add_definitions(-Wall)
 set (CMAKE_CXX_STANDARD 11)
 set(OCTO_SOURCES
 	src/chip8/backend/terminal/TerminalBackend.cpp
