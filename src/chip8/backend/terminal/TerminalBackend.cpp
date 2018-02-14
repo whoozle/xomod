@@ -26,7 +26,7 @@ namespace chip8
 		++offsetX;
 		++offsetY;
 
-		puts("\033[s");
+		//puts("\033[s");
 		for(unsigned y = 0; y < chipH; y += denom, ++offsetY)
 		{
 			printf("\033[%d;%df", offsetY, offsetX);
@@ -37,6 +37,6 @@ namespace chip8
 				printf("\e[%dm ", value + 40);
 			}
 		}
-		puts("\033[u");
+		//puts("\033[u");
 	}
 }
