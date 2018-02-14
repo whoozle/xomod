@@ -61,11 +61,11 @@ namespace chip8
 
 	void Chip8::Step()
 	{
-		u8 h = _memory.Get(_pc++);
+		u8 hh = _memory.Get(_pc++);
 		u8 nn = _memory.Get(_pc++);
-		u8 group = h >> 4;
-		u8 x = h & 0x0f;
-		u16 op = (static_cast<u16>(h) << 8) | nn; //remove it
+		u8 group = hh >> 4;
+		u8 x = hh & 0x0f;
+		u16 op = (static_cast<u16>(hh) << 8) | nn; //remove it
 
 		switch(group)
 		{
@@ -116,6 +116,7 @@ namespace chip8
 			if (_reg[x] != nn)
 				SkipNext();
 			break;
+
 		case 0x05: //SXX VX, VY
 			{
 				u8 y = nn >> 4;
@@ -164,7 +165,20 @@ namespace chip8
 				case 0x06: { u8 r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
 				case 0x0e: { u8 r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
 				}
+			break;
 			}
+
+		case 0x09: //SNE VX, NN
+			{
+				u8 y = nn >> 4;
+				u8 z = nn & 0x0f;
+				if (z != 0)
+					InvalidOp(op);
+
+				if (_reg[x] != _reg[y])
+					SkipNext();
+			}
+			break;
 
 		case 0x0a: //MOV I, NNN
 			_i = (static_cast<u16>(x) << 8) | nn;
