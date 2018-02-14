@@ -81,7 +81,7 @@ namespace chip8
 			std::fill(_data.begin(), _data.end(), static_cast<u8>(DirtyBit));
 		}
 
-		u8 *GetLine(unsigned y)
+		u8 *GetLine(uint y)
 		{ return _data.data() + y * _w; }
 	};
 }

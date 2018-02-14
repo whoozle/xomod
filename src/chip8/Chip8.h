@@ -12,8 +12,8 @@ namespace chip8
 
 	class Chip8
 	{
-		static constexpr unsigned InstructionsPerStep	= 1000;
-		static constexpr unsigned EntryPoint			= 0x200;
+		static constexpr uint InstructionsPerStep	= 1000;
+		static constexpr uint EntryPoint			= 0x200;
 		static constexpr u8 VF							= 0x0f;
 
 	private:
@@ -59,8 +59,8 @@ namespace chip8
 		void Sprite(u8 plane, u8 x, u8 y, u8 h);
 
 	public:
-		static constexpr unsigned TimerFreq = 60;
-		static constexpr unsigned TimerPeriodMs = 1000000 / TimerFreq;
+		static constexpr uint TimerFreq = 60;
+		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
 		Chip8(Backend & backend): _backend(backend)
 		{ Reset(); }

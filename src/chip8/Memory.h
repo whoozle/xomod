@@ -9,7 +9,7 @@ namespace chip8
 	class Memory
 	{
 	public:
-		static constexpr unsigned Size = 0x10000; //64k
+		static constexpr uint Size = 0x10000; //64k
 		static constexpr u16 FontOffset		= 0;
 		static constexpr u16 FontSize		= 5 * 16;
 		static constexpr u16 BigFontOffset	= FontOffset + FontSize;

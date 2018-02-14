@@ -15,7 +15,7 @@ namespace chip8
 		virtual ~Backend() { }
 
 
-		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, unsigned displayW, unsigned displayH, unsigned chipW, unsigned chipH)
+		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, uint displayW, uint displayH, uint chipW, uint chipH)
 		{
 			if (displayW >= chipW && displayH >= chipH) //zoom out
 			{
