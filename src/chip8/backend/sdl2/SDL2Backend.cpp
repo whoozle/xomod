@@ -22,6 +22,31 @@ namespace chip8
 				case SDL_QUIT:
 					running = false;
 					break;
+				case SDL_KEYDOWN:
+				case SDL_KEYUP:
+					{
+						bool state = event.type == SDL_KEYDOWN;
+						switch(event.key.keysym.sym)
+						{
+						case SDLK_1: _keys[0x1] = state; break;
+						case SDLK_2: _keys[0x2] = state; break;
+						case SDLK_3: _keys[0x3] = state; break;
+						case SDLK_4: _keys[0xc] = state; break;
+						case SDLK_q: _keys[0x4] = state; break;
+						case SDLK_w: _keys[0x5] = state; break;
+						case SDLK_e: _keys[0x6] = state; break;
+						case SDLK_r: _keys[0xd] = state; break;
+						case SDLK_a: _keys[0x7] = state; break;
+						case SDLK_s: _keys[0x8] = state; break;
+						case SDLK_d: _keys[0x9] = state; break;
+						case SDLK_f: _keys[0xe] = state; break;
+						case SDLK_z: _keys[0xa] = state; break;
+						case SDLK_x: _keys[0x0] = state; break;
+						case SDLK_c: _keys[0xb] = state; break;
+						case SDLK_v: _keys[0xf] = state; break;
+						}
+					}
+					break;
 				}
 			}
 		}
@@ -42,6 +67,6 @@ namespace chip8
 
 	bool SDL2Backend::GetKeyState(u8 index)
 	{
-		return false;
+		return _keys.at(index);
 	}
 }
