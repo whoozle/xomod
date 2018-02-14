@@ -9,6 +9,11 @@ namespace chip8
 	{
 	public:
 		void Render(Framebuffer & fb) override;
+
+	private:
+		void SetCursor(int y, int x);
+		void Print(const char * what, int bgColor);
+		void Print(const char * what, int bgColor, int fgColor);
 	};
 }
 
