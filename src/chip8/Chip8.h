@@ -74,7 +74,7 @@ namespace chip8
 			_delay = 0;
 		}
 
-		void Tick();
+		bool Tick();
 		void Load(const u8 * data, size_t dataSize);
 		[[ noreturn ]] void InvalidOp(u16 op);
 

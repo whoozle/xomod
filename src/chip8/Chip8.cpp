@@ -10,7 +10,7 @@ namespace chip8
 	void Chip8::InvalidOp(u16 op)
 	{ throw std::runtime_error("invalid instruction " + ToHex(op)); }
 
-	void Chip8::Tick()
+	bool Chip8::Tick()
 	{
 		using clock = std::chrono::high_resolution_clock;
 
@@ -34,7 +34,7 @@ namespace chip8
 		if (_delay)
 			--_delay;
 
-		_backend.Render(_framebuffer);
+		return _backend.Render(_framebuffer);
 	}
 
 	void Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)

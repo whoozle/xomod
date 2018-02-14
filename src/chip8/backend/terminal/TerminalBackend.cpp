@@ -76,14 +76,14 @@ namespace chip8
 	bool TerminalBackend::GetKeyState(u8 index)
 	{ return false; }
 
-	void TerminalBackend::Render(Framebuffer & fb)
+	bool TerminalBackend::Render(Framebuffer & fb)
 	{
 		struct winsize w;
 		if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) != 0)
-			return;
+			return false;
 
 		if (w.ws_col <= 0 || w.ws_row <= 0)
-			return;
+			return false;
 
 		int chipW = fb.GetWidth();
 		int chipH = fb.GetHeight();
@@ -137,6 +137,7 @@ namespace chip8
 			}
 		}
 		//puts("\033[u");
+		return true;
 	}
 
 	void TerminalBackend::Print(const char * what, int bgColor)

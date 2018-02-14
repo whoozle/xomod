@@ -1,5 +1,6 @@
 #include <chip8/Chip8.h>
 #include <chip8/backend/terminal/TerminalBackend.h>
+#include <chip8/backend/sdl2/SDL2Backend.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -15,7 +16,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	TerminalBackend backend;
+	//TerminalBackend backend;
+	SDL2Backend backend;
 	Chip8 chip(backend);
 
 	{
@@ -38,7 +40,6 @@ int main(int argc, char **argv)
 		chip.Load(reinterpret_cast<const u8 *>(buffer.data()), buffer.size());
 	}
 
-	while(true)
-		chip.Tick();
+	while(chip.Tick());
 	return 0;
 }

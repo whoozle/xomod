@@ -8,7 +8,7 @@ namespace chip8
 	class TerminalBackend : public Backend
 	{
 	public:
-		void Render(Framebuffer & fb) override;
+		bool Render(Framebuffer & fb) override;
 		bool GetKeyState(u8 index);
 
 	private:

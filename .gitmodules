@@ -1,0 +1,3 @@
+[submodule "src/chip8/backend/sdl2/sdl2pp"]
+	path = src/chip8/backend/sdl2/sdl2pp
+	url = git@github.com:libSDL2pp/libSDL2pp.git
