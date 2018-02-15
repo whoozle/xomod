@@ -45,6 +45,8 @@ namespace chip8
 		if (!_running)
 			return false;
 
+		bool running = _backend.Render(_framebuffer);
+
 		std::this_thread::sleep_until(started + std::chrono::microseconds((uint)TimerPeriodMs));
 
 		if (_delay)
@@ -56,7 +58,7 @@ namespace chip8
 				_backend.SetAudio(nullptr);
 		}
 
-		return _backend.Render(_framebuffer);
+		return running;
 	}
 
 	void Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)
