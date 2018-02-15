@@ -104,16 +104,10 @@ namespace chip8
 				memset(_data.data() + _size + size, 0, -size);
 			} else if (dx > 0) {
 				for(uint offset = 0; offset < _size; offset += _w)
-				{
-					for(int i = 0; i < dx; ++i)
-						_data[offset + i] = 0;
-				}
+					memset(_data.data() + offset, 0, dx);
 			} else if (dx < 0) {
 				for(uint offset = 0; offset < _size; offset += _w)
-				{
-					for(int i = _w + dx; i < _w; ++i)
-						_data[offset + i] = 0;
-				}
+					memset(_data.data() + offset + _w + dx, 0, -dx);
 			}
 			Invalidate();
 		}
