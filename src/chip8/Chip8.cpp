@@ -24,8 +24,23 @@ namespace chip8
 
 		auto started = clock::now();
 
-		for(unsigned i = 0; i < _speed && _running; ++i)
-			Step();
+		if (_waitingInput)
+		{
+			for(u8 i = 0; i < 16; ++i)
+			{
+				if (_backend.GetKeyState(i))
+				{
+					_reg.at(_inputReg) = i;
+					_waitingInput = false;
+				}
+			}
+		}
+
+		if (!_waitingInput)
+		{
+			for(unsigned i = 0; i < _speed && _running; ++i)
+				Step();
+		}
 
 		if (!_running)
 			return false;
@@ -279,6 +294,11 @@ namespace chip8
 				_reg[x] = _delay;
 				break;
 
+			case 0x0a: //vX = key
+				_waitingInput = true;
+				_inputReg = x;
+				break;
+
 			case 0x15: //delay vX
 				_delay = _reg[x];
 				break;
@@ -351,6 +371,7 @@ namespace chip8
 		_running = true;
 		_framebuffer.SetResolution(64, 32);
 		_backend.SetAudio(nullptr);
+		_waitingInput = false;
 	}
 
 }

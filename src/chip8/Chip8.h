@@ -32,6 +32,8 @@ namespace chip8
 		u8					_buzzer;
 		uint				_speed;
 		bool				_running;
+		bool				_waitingInput;
+		u8					_inputReg;
 
 		std::default_random_engine _randomGenerator;
 		std::uniform_int_distribution<u8> _randomDistribution;
