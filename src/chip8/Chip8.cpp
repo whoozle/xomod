@@ -16,7 +16,7 @@ namespace chip8
 	}
 
 	void Chip8::InvalidOp(u16 op)
-	{ throw std::runtime_error("invalid instruction " + ToHex(op)); }
+	{ Dump(); throw std::runtime_error("invalid instruction " + ToHex(op)); }
 
 	bool Chip8::Tick()
 	{
@@ -100,7 +100,7 @@ namespace chip8
 				switch(nn)
 				{
 					case 0x00:
-						_running = false;
+						Halt();
 						break;
 					case 0xc0 ... 0xcf:
 						_framebuffer.Scroll(0, nn & 0x0f); //down n pixels
@@ -123,7 +123,7 @@ namespace chip8
 						_framebuffer.Scroll(-4, 0);
 						break;
 					case 0xfd: //halt
-						_running = false;
+						Halt();
 						break;
 					case 0xfe: //lores
 						_framebuffer.SetResolution(64, 32);
@@ -377,6 +377,17 @@ namespace chip8
 		_framebuffer.SetResolution(64, 32);
 		_backend.SetAudio(nullptr);
 		_waitingInput = false;
+	}
+
+	void Chip8::Dump()
+	{
+		fprintf(stderr, "CHIP8 halted at address pc: 0x%04x, i: 0x%04x, delay: %u, buzzer: %u\n", (uint)_pc, (uint)_i, (uint)_delay, (uint)_buzzer);
+		fprintf(stderr, "Register dump:\n");
+		for(uint i = 0; i < _reg.size(); ++i)
+		{
+			u8 value = _reg[i];
+			fprintf(stderr, " v%x = 0x%02x %3u %+4d\n", i, (uint)value, (uint)value, (int)(s8)value);
+		}
 	}
 
 }

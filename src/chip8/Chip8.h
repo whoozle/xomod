@@ -83,7 +83,11 @@ namespace chip8
 
 		bool Tick();
 		void Load(const u8 * data, size_t dataSize);
+		void Halt()
+		{ _running = false; Dump(); }
+
 		[[ noreturn ]] void InvalidOp(u16 op);
+		void Dump();
 
 	private:
 		void Step();
