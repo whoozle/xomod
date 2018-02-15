@@ -2,27 +2,53 @@
 #define FILE_H
 
 #include <chip8/types.h>
-#include <fstream>
-#include <iostream>
 #include <vector>
-#include <ios>
+#include <string>
 #include <stdexcept>
+#include <stdio.h>
+#include <fcntl.h>           /* Definition of AT_* constants */
+#include <unistd.h>
 
 namespace chip8
 {
+	class File
+	{
+		FILE *	_f;
+	public:
+		File(const std::string &path) : _f(fopen(path.c_str(), "rb"))
+		{
+			if (!_f)
+				throw std::runtime_error("could not open file " + path);
+		}
+
+		File(const File &) = delete;
+		File& operator = (const File &) = delete;
+
+		~File()
+		{ fclose(_f); }
+
+		size_t Read(void *data, size_t size)
+		{ return fread(data, 1, size, _f); }
+	};
+
 	inline std::vector<u8> ReadFile(const std::string &path)
 	{
-		std::ifstream file(path, std::ios::binary | std::ios::ate);
-		std::streamsize size = file.tellg();
-		if (size < 0)
-			throw std::runtime_error("could not open file " + path);
+		File file(path);
+		std::vector<u8> data;
 
-		file.seekg(0, std::ios::beg);
+		size_t offset = 0;
+		static constexpr size_t Step = 0x10000;
 
-		std::vector<u8> buffer(size);
-		if (!file.read(static_cast<char *>(static_cast<void *>(buffer.data())), size))
-			throw std::runtime_error("could not read file " + path);
-		return buffer;
+		size_t r;
+		do
+		{
+			data.resize(offset + Step);
+			r = file.Read(data.data() + offset, Step);
+			offset += r;
+		}
+		while(r == Step);
+		data.resize(offset);
+		return data;
 	}
 }
 
