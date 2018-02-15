@@ -27,6 +27,7 @@ namespace chip8
 		u8					_planes;
 		u8					_delay;
 		uint				_speed;
+		bool				_running;
 
 		void WriteResult(u8 reg, u8 value, bool carry)
 		{
@@ -72,6 +73,8 @@ namespace chip8
 			_sp = 0;
 			_planes = 1;
 			_delay = 0;
+			_running = true;
+			_framebuffer.SetResolution(64, 32);
 		}
 
 		bool Tick();

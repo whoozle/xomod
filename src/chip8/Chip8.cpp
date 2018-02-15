@@ -17,8 +17,11 @@ namespace chip8
 
 		auto started = clock::now();
 
-		for(unsigned i = 0; i < _speed; ++i)
+		for(unsigned i = 0; i < _speed && _running; ++i)
 			Step();
+
+		if (!_running)
+			return false;
 
 		std::this_thread::sleep_until(started + std::chrono::microseconds((uint)TimerPeriodMs));
 
@@ -73,6 +76,9 @@ namespace chip8
 						if (_sp == 0)
 							InvalidOp(op); //stack overflow, replace method
 						_pc = _stack[--_sp];
+						break;
+					case 0xfd:
+						_running = false;
 						break;
 					case 0xff: //hires
 						_framebuffer.SetResolution(128, 64);
