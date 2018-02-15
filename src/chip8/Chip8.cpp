@@ -85,6 +85,11 @@ namespace chip8
 
 	void Chip8::Step()
 	{
+		if (_pc < 0x200) {
+			fprintf(stderr, "executing protected ROM space, halting...\n");
+			Halt();
+			return;
+		}
 		u8 hh = _memory.Get(_pc++);
 		u8 nn = _memory.Get(_pc++);
 		u8 group = hh >> 4;
