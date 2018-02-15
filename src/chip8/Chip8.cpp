@@ -38,7 +38,7 @@ namespace chip8
 			for(h = 16; h--; ++y)
 			{
 				collision |= _framebuffer.Write(plane, y, x, _memory.Get(i++));
-				collision |= _framebuffer.Write(plane, y, x + 1, _memory.Get(i++));
+				collision |= _framebuffer.Write(plane, y, x + 8, _memory.Get(i++));
 			}
 		}
 		else
