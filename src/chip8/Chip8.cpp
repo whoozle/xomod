@@ -206,15 +206,15 @@ namespace chip8
 				u8 z = nn & 0x0f;
 				switch(z)
 				{
-				case 0x00: _reg[x]  = _reg[y]; break;
-				case 0x01: _reg[x] |= _reg[y]; break;
-				case 0x02: _reg[x] &= _reg[y]; break;
-				case 0x03: _reg[x] ^= _reg[y]; break;
-				case 0x04: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
-				case 0x05: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
-				case 0x07: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
-				case 0x06: { u8  r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
-				case 0x0e: { u8  r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
+				case 0x0: _reg[x]  = _reg[y]; break;
+				case 0x1: _reg[x] |= _reg[y]; break;
+				case 0x2: _reg[x] &= _reg[y]; break;
+				case 0x3: _reg[x] ^= _reg[y]; break;
+				case 0x4: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
+				case 0x5: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
+				case 0x7: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
+				case 0x6: { u8  r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
+				case 0xe: { u8  r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
 				}
 			}
 			break;
