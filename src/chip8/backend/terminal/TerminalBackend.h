@@ -9,7 +9,7 @@ namespace chip8
 	{
 	public:
 		bool Render(Framebuffer & fb) override;
-		bool GetKeyState(u8 index);
+		bool GetKeyState(u8 index) override;
 		void SetAudio(Audio *audio) override { }
 
 	private:
