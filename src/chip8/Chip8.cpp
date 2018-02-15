@@ -235,7 +235,7 @@ namespace chip8
 				break;
 
 			case 0x01: //plane
-				_planes = x;
+				_planes = x & 0x03;
 				_framebuffer.Invalidate();
 				break;
 
