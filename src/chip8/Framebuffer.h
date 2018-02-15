@@ -4,6 +4,7 @@
 #include <chip8/types.h>
 #include <array>
 #include <algorithm>
+#include <string.h>
 
 namespace chip8
 {
@@ -85,7 +86,37 @@ namespace chip8
 		{ return _data.data() + y * _w; }
 
 		void Scroll(int dx, int dy)
-		{ }
+		{
+			if ((dx | dy) == 0)
+				return;
+
+			int dst = dy * _w + dx;
+			if (dst < 0)
+				memmove(_data.data(), _data.data() - dst, _size + dst);
+			else
+				memmove(_data.data() + dst, _data.data(), _size - dst);
+
+			//clean garbage
+			int size = _w * dy;
+			if (dy > 0) {
+				memset(_data.data(), 0, size);
+			} else if (dy < 0) {
+				memset(_data.data() + _size + size, 0, -size);
+			} else if (dx > 0) {
+				for(uint offset = 0; offset < _size; offset += _w)
+				{
+					for(int i = 0; i < dx; ++i)
+						_data[offset + i] = 0;
+				}
+			} else if (dx < 0) {
+				for(uint offset = 0; offset < _size; offset += _w)
+				{
+					for(int i = _w + dx; i < _w; ++i)
+						_data[offset + i] = 0;
+				}
+			}
+			Invalidate();
+		}
 	};
 }
 
