@@ -9,7 +9,7 @@ namespace chip8
 	void Audio::Tick(uint freq)
 	{
 		_offset += SamplingFreq;
-		if (_offset > freq)
+		if (_offset >= freq)
 		{
 			_offset -= freq;
 			_currentBitOffset = (_currentBitOffset + 1) & 0x7f; //128 bits
@@ -22,7 +22,7 @@ namespace chip8
 		while(n--)
 		{
 			Tick(freq);
-			*samples++ = _currentBit? Volume: 0;
+			*samples++ = _currentBit? _randomDistribution(_randomGenerator): 0;
 		}
 	}
 }
