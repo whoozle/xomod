@@ -382,6 +382,13 @@ namespace chip8
 	void Chip8::Dump()
 	{
 		fprintf(stderr, "CHIP8 halted at address pc: 0x%04x, i: 0x%04x, delay: %u, buzzer: %u\n", (uint)_pc, (uint)_i, (uint)_delay, (uint)_buzzer);
+		if (_sp)
+		{
+			fprintf(stderr, "Stack:");
+			for(uint i = 0; i < _sp; ++i)
+				fprintf(stderr, " 0x%04x", _stack[i]);
+			fprintf(stderr, " (top)\n");
+		}
 		fprintf(stderr, "Register dump:\n");
 		for(uint i = 0; i < _reg.size(); ++i)
 		{
