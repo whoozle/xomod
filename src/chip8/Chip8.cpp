@@ -34,6 +34,12 @@ namespace chip8
 		if (_delay)
 			--_delay;
 
+		if (_buzzer)
+		{
+			if (--_buzzer == 0)
+				_backend.SetAudio(nullptr);
+		}
+
 		return _backend.Render(_framebuffer);
 	}
 
@@ -265,6 +271,7 @@ namespace chip8
 				break;
 
 			case 0x02: //audio
+				_audio.SetBaseAddr(_i);
 				break;
 
 			case 0x07: //vX = delay
@@ -276,6 +283,8 @@ namespace chip8
 				break;
 
 			case 0x18: //buzzer vX
+				_buzzer = _reg[x];
+				_backend.SetAudio(_buzzer? &_audio: nullptr);
 				break;
 
 			case 0x1e: //i += vX
@@ -325,6 +334,18 @@ namespace chip8
 		size_t n = std::min<size_t>(dataSize, 0x10000 - EntryPoint);
 		u8 *dst = _memory.GetData() + EntryPoint;
 		std::copy(data, data + n, dst);
+	}
+	void Chip8::Reset()
+	{
+		_memory.Reset();
+		_pc = EntryPoint;
+		_sp = 0;
+		_planes = 1;
+		_delay = 0;
+		_buzzer = 0;
+		_running = true;
+		_framebuffer.SetResolution(64, 32);
+		_backend.SetAudio(nullptr);
 	}
 
 }

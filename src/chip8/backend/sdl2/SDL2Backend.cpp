@@ -1,17 +1,28 @@
 #include <chip8/backend/sdl2/SDL2Backend.h>
 #include <chip8/Framebuffer.h>
+#include <SDL2pp/AudioSpec.hh>
 #include <SDL.h>
+#include <algorithm>
 
 namespace chip8
 {
 	SDL2Backend::SDL2Backend():
 		_sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_EVENTS),
 		_window("CHIP8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_RESIZABLE),
-		_renderer(_window, -1, SDL_RENDERER_ACCELERATED)
+		_renderer(_window, -1, SDL_RENDERER_ACCELERATED),
+		_audio(nullptr),
+		_audioDevice
+		(
+			SDL2pp::Optional<std::string>(), false,
+			SDL2pp::AudioSpec(44100, AUDIO_S16, 1, 44100 / 60),
+			[this](Uint8* stream, int len) { this->Generate(stream, len); }
+		)
 	{ }
 
 	SDL2Backend::~SDL2Backend()
-	{ }
+	{
+		SDL2Backend::SetAudio(nullptr);
+	}
 
 	bool SDL2Backend::Render(Framebuffer & fb)
 	{
@@ -91,5 +102,16 @@ namespace chip8
 	bool SDL2Backend::GetKeyState(u8 index)
 	{
 		return _keys.at(index);
+	}
+
+	void SDL2Backend::SetAudio(Audio *audio)
+	{
+		auto lock = _audioDevice.Lock();
+		_audio = audio;
+	}
+
+	void SDL2Backend::Generate(Uint8* stream, int len)
+	{
+		std::fill(stream, stream + len, 0);
 	}
 }

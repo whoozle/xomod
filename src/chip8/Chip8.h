@@ -1,6 +1,7 @@
 #ifndef CHIP8_H
 #define CHIP8_H
 
+#include <chip8/Audio.h>
 #include <chip8/Framebuffer.h>
 #include <chip8/Memory.h>
 #include <chip8/types.h>
@@ -20,6 +21,7 @@ namespace chip8
 		Backend &			_backend;
 		Memory				_memory;
 		Framebuffer			_framebuffer;
+		Audio				_audio;
 
 		std::array<u8, 16>	_reg;
 		std::array<u16, 16>	_stack;
@@ -27,6 +29,7 @@ namespace chip8
 		u8					_sp;
 		u8					_planes;
 		u8					_delay;
+		u8					_buzzer;
 		uint				_speed;
 		bool				_running;
 
@@ -67,19 +70,14 @@ namespace chip8
 		static constexpr uint TimerFreq = 60;
 		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8(Backend & backend, uint speed = 1000): _backend(backend), _speed(speed), _randomDistribution(0, 255)
+		Chip8(Backend & backend, uint speed = 1000):
+			_backend(backend),
+			_audio(_memory),
+			_speed(speed),
+			_randomDistribution(0, 255)
 		{ Reset(); }
 
-		void Reset()
-		{
-			_memory.Reset();
-			_pc = EntryPoint;
-			_sp = 0;
-			_planes = 1;
-			_delay = 0;
-			_running = true;
-			_framebuffer.SetResolution(64, 32);
-		}
+		void Reset();
 
 		bool Tick();
 		void Load(const u8 * data, size_t dataSize);

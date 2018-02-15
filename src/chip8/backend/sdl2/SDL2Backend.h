@@ -5,6 +5,7 @@
 #include <SDL2pp/SDL.hh>
 #include <SDL2pp/Window.hh>
 #include <SDL2pp/Renderer.hh>
+#include <SDL2pp/AudioDevice.hh>
 
 namespace chip8
 {
@@ -14,13 +15,20 @@ namespace chip8
 		SDL2pp::Window				_window;
 		SDL2pp::Renderer			_renderer;
 		std::array<bool, 16>		_keys;
+		Audio *						_audio;
+
+		SDL2pp::AudioDevice			_audioDevice; //leave last member, can call back early
+
+	private:
+		void Generate(Uint8* stream, int len);
 
 	public:
 		SDL2Backend();
 		~SDL2Backend();
 
-		virtual bool Render(Framebuffer & fb) override;
-		virtual bool GetKeyState(u8 index) override;
+		bool Render(Framebuffer & fb) override;
+		bool GetKeyState(u8 index) override;
+		void SetAudio(Audio *audio) override;
 	};
 }
 

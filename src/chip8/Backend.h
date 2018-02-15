@@ -6,6 +6,7 @@
 
 namespace chip8
 {
+	class Audio;
 	class Framebuffer;
 
 	class Backend
@@ -14,6 +15,7 @@ namespace chip8
 		virtual ~Backend() { }
 		virtual bool Render(Framebuffer & fb) = 0;
 		virtual bool GetKeyState(u8 index) = 0;
+		virtual void SetAudio(Audio *audio) = 0;
 
 		static void CalculateZoom(int &num, int &denom, int & offsetX, int &offsetY, uint displayW, uint displayH, uint chipW, uint chipH)
 		{
