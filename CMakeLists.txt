@@ -1,7 +1,18 @@
 cmake_minimum_required(VERSION 2.6)
+include(CheckCXXCompilerFlag)
 
-add_definitions(-Wall -Wimplicit-fallthrough)
 set (CMAKE_CXX_STANDARD 11)
+
+check_cxx_compiler_flag(-Wall HAS_WALL)
+if (HAS_WALL)
+	add_definitions(-Wall)
+endif()
+
+check_cxx_compiler_flag(-Wimplicit-fallthrough HAS_WFALLTHROUGH)
+if (HAS_WFALLTHROUGH)
+	add_definitions(-Wimplicit-fallthrough)
+endif()
+
 set(OCTO_SOURCES
 	src/chip8/backend/terminal/TerminalBackend.cpp
 	src/chip8/backend/sdl2/SDL2Backend.cpp
