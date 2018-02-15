@@ -16,6 +16,7 @@ namespace chip8
 		SDL2pp::Renderer			_renderer;
 		std::array<bool, 16>		_keys;
 		Audio *						_audio;
+		uint						_audioFreq;
 
 		SDL2pp::AudioDevice			_audioDevice; //leave last member, can call back early
 

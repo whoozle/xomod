@@ -1,4 +1,5 @@
 #include <chip8/backend/sdl2/SDL2Backend.h>
+#include <chip8/Audio.h>
 #include <chip8/Framebuffer.h>
 #include <SDL2pp/AudioSpec.hh>
 #include <SDL.h>
@@ -11,16 +12,20 @@ namespace chip8
 		_window("CHIP8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_RESIZABLE),
 		_renderer(_window, -1, SDL_RENDERER_ACCELERATED),
 		_audio(nullptr),
+		_audioFreq(48000),
 		_audioDevice
 		(
 			SDL2pp::Optional<std::string>(), false,
-			SDL2pp::AudioSpec(44100, AUDIO_S16, 1, 44100 / 60),
+			SDL2pp::AudioSpec(_audioFreq, AUDIO_S16, 1, _audioFreq / 60),
 			[this](Uint8* stream, int len) { this->Generate(stream, len); }
 		)
-	{ }
+	{
+		_audioDevice.Pause(false);
+	}
 
 	SDL2Backend::~SDL2Backend()
 	{
+		_audioDevice.Pause(true);
 		SDL2Backend::SetAudio(nullptr);
 	}
 
@@ -112,6 +117,11 @@ namespace chip8
 
 	void SDL2Backend::Generate(Uint8* stream, int len)
 	{
-		std::fill(stream, stream + len, 0);
+		if (!_audio || !_audioFreq)
+		{
+			std::fill(stream, stream + len, 0);
+			return;
+		}
+		_audio->Generate(_audioFreq, reinterpret_cast<s16 *>(stream), len / 2);
 	}
 }

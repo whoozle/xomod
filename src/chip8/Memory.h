@@ -25,6 +25,9 @@ namespace chip8
 		u8 Get(u16 index)
 		{ return _data[index]; }
 
+		u8 Get(u16 index) const
+		{ return _data[index]; }
+
 		void Set(u16 index, u8 value)
 		{ _data[index] = value; }
 
