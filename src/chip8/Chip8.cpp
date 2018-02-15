@@ -17,12 +17,8 @@ namespace chip8
 
 		auto started = clock::now();
 
-		bool running = true;
-		for(unsigned i = 0; i < _speed && running; ++i)
-			running = Step();
-
-		if (!running)
-			return false;
+		for(unsigned i = 0; i < _speed; ++i)
+			Step();
 
 		std::this_thread::sleep_until(started + std::chrono::microseconds((uint)TimerPeriodMs));
 
@@ -54,7 +50,7 @@ namespace chip8
 		_reg[VF] = collision? 1: 0;
 	}
 
-	bool Chip8::Step()
+	void Chip8::Step()
 	{
 		u8 hh = _memory.Get(_pc++);
 		u8 nn = _memory.Get(_pc++);
@@ -78,8 +74,6 @@ namespace chip8
 							InvalidOp(op); //stack overflow, replace method
 						_pc = _stack[--_sp];
 						break;
-					case 0xfd: //halt
-						return false;
 					case 0xff: //hires
 						_framebuffer.SetResolution(128, 64);
 						break;
@@ -273,7 +267,6 @@ namespace chip8
 		default:
 			InvalidOp(op);
 		}
-		return true;
 	}
 
 	void Chip8::Load(const u8 * data, size_t dataSize)

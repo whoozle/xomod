@@ -79,7 +79,7 @@ namespace chip8
 		[[ noreturn ]] void InvalidOp(u16 op);
 
 	private:
-		bool Step();
+		void Step();
 	};
 }
 
