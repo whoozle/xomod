@@ -5,6 +5,7 @@
 #include <chip8/Memory.h>
 #include <chip8/types.h>
 #include <array>
+#include <random>
 
 namespace chip8
 {
@@ -28,6 +29,9 @@ namespace chip8
 		u8					_delay;
 		uint				_speed;
 		bool				_running;
+
+		std::default_random_engine _randomGenerator;
+		std::uniform_int_distribution<u8> _randomDistribution;
 
 		void WriteResult(u8 reg, u8 value, bool carry)
 		{
@@ -63,7 +67,7 @@ namespace chip8
 		static constexpr uint TimerFreq = 60;
 		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8(Backend & backend, uint speed = 1000): _backend(backend), _speed(speed)
+		Chip8(Backend & backend, uint speed = 1000): _backend(backend), _speed(speed), _randomDistribution(0, 255)
 		{ Reset(); }
 
 		void Reset()

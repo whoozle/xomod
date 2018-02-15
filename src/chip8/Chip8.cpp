@@ -179,10 +179,10 @@ namespace chip8
 				case 0x02: _reg[x] &= _reg[y]; break;
 				case 0x03: _reg[x] ^= _reg[y]; break;
 				case 0x04: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
-				case 0x05: { u8 r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
-				case 0x07: { u8 r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
-				case 0x06: { u8 r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
-				case 0x0e: { u8 r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
+				case 0x05: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
+				case 0x07: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
+				case 0x06: { u8  r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
+				case 0x0e: { u8  r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
 				}
 			}
 			break;
@@ -205,6 +205,10 @@ namespace chip8
 
 		case 0xb: //JUMP0 NNN
 			_pc = Pack16(x, nn) + _reg[0];
+			break;
+
+		case 0xc:
+			_reg[x] = _randomDistribution(_randomGenerator) & nn;
 			break;
 
 		case 0xd: //sprite
@@ -278,12 +282,32 @@ namespace chip8
 				_i += _reg[x];
 				break;
 
+			case 0x29: //hex
+				_i = Memory::FontOffset + (_reg[x] & 0xf) * 5;
+				break;
+
+			case 0x30: //bighex
+				_i = Memory::BigFontOffset + (_reg[x] & 0xf) * 10;
+				break;
+
+			case 0x33: //bcd
+				{
+					_memory.Set(_i + 0, (_reg[x] / 100) % 10);
+					_memory.Set(_i + 1, (_reg[x] / 10) % 10);
+					_memory.Set(_i + 2, _reg[x] % 10);
+				}
+				break;
+
 			case 0x55: //save v0-vX
 				SaveRange(0, x); _i += x; //quirks
 				break;
 
 			case 0x65: //load v0-vX
 				LoadRange(0, x); _i += x;
+				break;
+
+			case 0x75: //export flags
+			case 0x85: //import flags
 				break;
 
 			default:
