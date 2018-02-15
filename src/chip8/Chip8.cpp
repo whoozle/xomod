@@ -97,6 +97,9 @@ namespace chip8
 			case 0x0:
 				switch(nn)
 				{
+					case 0x00:
+						_running = false;
+						break;
 					case 0xc0 ... 0xcf:
 						_framebuffer.Scroll(0, nn & 0x0f); //down n pixels
 						break;
