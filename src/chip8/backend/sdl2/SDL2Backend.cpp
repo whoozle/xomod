@@ -11,12 +11,12 @@ namespace chip8
 		_sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_EVENTS),
 		_window("CHIP8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_RESIZABLE),
 		_renderer(_window, -1, SDL_RENDERER_ACCELERATED),
+		_spec(SampleFreq, AUDIO_S16, 1, SampleFreq / 60),
 		_audio(nullptr),
-		_audioFreq(48000),
 		_audioDevice
 		(
 			SDL2pp::Optional<std::string>(), false,
-			SDL2pp::AudioSpec(_audioFreq, AUDIO_S16, 1, _audioFreq / 60),
+			_spec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE,
 			[this](Uint8* stream, int len) { this->Generate(stream, len); }
 		)
 	{
@@ -125,11 +125,11 @@ namespace chip8
 
 	void SDL2Backend::Generate(Uint8* stream, int len)
 	{
-		if (!_audio || !_audioFreq)
+		if (!_audio)
 		{
 			std::fill(stream, stream + len, 0);
 			return;
 		}
-		_audio->Generate(_audioFreq, reinterpret_cast<s16 *>(stream), len / 2);
+		_audio->Generate(_spec.freq, reinterpret_cast<s16 *>(stream), len / 2);
 	}
 }

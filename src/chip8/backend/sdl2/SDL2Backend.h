@@ -6,17 +6,21 @@
 #include <SDL2pp/Window.hh>
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/AudioDevice.hh>
+#include <SDL2pp/AudioSpec.hh>
 
 namespace chip8
 {
 	class SDL2Backend : public Backend
 	{
+		static constexpr uint SampleFreq = 44100;
+
 		SDL2pp::SDL					_sdl;
 		SDL2pp::Window				_window;
 		SDL2pp::Renderer			_renderer;
-		std::array<bool, 16>		_keys;
+		SDL2pp::AudioSpec			_spec;
 		Audio *						_audio;
-		uint						_audioFreq;
+
+		std::array<bool, 16>		_keys;
 
 		SDL2pp::AudioDevice			_audioDevice; //leave last member, can call back early
 
