@@ -63,6 +63,14 @@ namespace chip8
 						case SDLK_x: _keys[0x0] = state; break;
 						case SDLK_c: _keys[0xb] = state; break;
 						case SDLK_v: _keys[0xf] = state; break;
+						case SDLK_RETURN:
+							if (state && (event.key.keysym.mod & KMOD_LALT))
+							{
+								auto flags = _window.GetFlags();
+								bool fullscreen = (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP;
+								_window.SetFullscreen(fullscreen? flags & ~SDL_WINDOW_FULLSCREEN_DESKTOP: flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+							}
+							break;
 						}
 					}
 					break;
