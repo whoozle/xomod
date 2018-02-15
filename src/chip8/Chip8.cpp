@@ -63,12 +63,18 @@ namespace chip8
 
 		switch(group)
 		{
-		case 0x00:
+		case 0x0:
 			switch(x)
 			{
-			case 0x00:
+			case 0x0:
 				switch(nn)
 				{
+					case 0xc0 ... 0xcf:
+						_framebuffer.Scroll(0, nn & 0x0f); //down n pixels
+						break;
+					case 0xd0 ... 0xdf:
+						_framebuffer.Scroll(0, -(nn & 0x0f)); //down n pixels
+						break;
 					case 0xe0: //clear
 						_framebuffer.Clear();
 						break;
@@ -77,8 +83,17 @@ namespace chip8
 							InvalidOp(op); //stack overflow, replace method
 						_pc = _stack[--_sp];
 						break;
-					case 0xfd:
+					case 0xfb: //scroll right 4
+						_framebuffer.Scroll(4, 0);
+						break;
+					case 0xfc: //scroll left 4
+						_framebuffer.Scroll(-4, 0);
+						break;
+					case 0xfd: //halt
 						_running = false;
+						break;
+					case 0xfe: //lores
+						_framebuffer.SetResolution(64, 32);
 						break;
 					case 0xff: //hires
 						_framebuffer.SetResolution(128, 64);
@@ -93,28 +108,28 @@ namespace chip8
 			}
 			break;
 
-		case 0x01: //jump NNN
+		case 0x1: //jump NNN
 			_pc = (static_cast<u16>(x) << 8) | nn;
 			break;
 
-		case 0x02: //call NNN
+		case 0x2: //call NNN
 			if (_sp >= _stack.size())
 				throw std::runtime_error("stack overflow");
 			_stack[_sp++] = _pc;
 			_pc = (static_cast<u16>(x) << 8) | nn;
 			break;
 
-		case 0x03: //SE VX, NN
+		case 0x3: //SE VX, NN
 			if (_reg[x] == nn)
 				SkipNext();
 			break;
 
-		case 0x04: //SNE VX, NN
+		case 0x4: //SNE VX, NN
 			if (_reg[x] != nn)
 				SkipNext();
 			break;
 
-		case 0x05: //SXX VX, VY
+		case 0x5: //SXX VX, VY
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
@@ -139,15 +154,15 @@ namespace chip8
 			}
 			break;
 
-		case 0x06: //LD VX, NN
+		case 0x6: //LD VX, NN
 			_reg[x] = nn;
 			break;
 
-		case 0x07:
+		case 0x7:
 			_reg[x] += nn;
 			break;
 
-		case 0x08: //arithmetics
+		case 0x8: //arithmetics
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
@@ -163,10 +178,10 @@ namespace chip8
 				case 0x06: { u8 r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
 				case 0x0e: { u8 r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
 				}
-			break;
 			}
+			break;
 
-		case 0x09: //SNE VX, NN
+		case 0x9: //SNE VX, NN
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
@@ -178,15 +193,15 @@ namespace chip8
 			}
 			break;
 
-		case 0x0a: //MOV I, NNN
+		case 0xa: //MOV I, NNN
 			_i = (static_cast<u16>(x) << 8) | nn;
 			break;
 
-		case 0x0b: //JUMP0 NNN
+		case 0xb: //JUMP0 NNN
 			_pc = ((static_cast<u16>(x) << 8) | nn) + _reg[0];
 			break;
 
-		case 0x0d: //sprite
+		case 0xd: //sprite
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
@@ -208,7 +223,7 @@ namespace chip8
 			}
 			break;
 
-		case 0x0e:
+		case 0xe:
 			switch(nn)
 			{
 			case 0x9e:
@@ -224,7 +239,7 @@ namespace chip8
 			}
 			break;
 
-		case 0x0f:
+		case 0xf:
 			switch(nn)
 			{
 			case 0x00:

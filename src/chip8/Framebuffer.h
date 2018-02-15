@@ -83,6 +83,9 @@ namespace chip8
 
 		u8 *GetLine(uint y)
 		{ return _data.data() + y * _w; }
+
+		void Scroll(int dx, int dy)
+		{ }
 	};
 }
 
