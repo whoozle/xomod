@@ -10,6 +10,9 @@ namespace chip8
 		_renderer(_window, -1, SDL_RENDERER_ACCELERATED)
 	{ }
 
+	SDL2Backend::~SDL2Backend()
+	{ }
+
 	bool SDL2Backend::Render(Framebuffer & fb)
 	{
 		bool running = true;
@@ -53,13 +56,32 @@ namespace chip8
 
 		int chipW = fb.GetWidth(), chipH = fb.GetHeight();
 		int num, denom, offsetX, offsetY;
-
 		CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
 		//printf("num %d, offset: %d, %d\n", num, offsetX, offsetY);
 		if  (denom > 1)
 			return running;
 
+		static SDL_Color palette[4] =
+		{
+			{ 0x28, 0x35, 0x93, 0xff },
+			{ 0x4c, 0xaf, 0x50, 0xff },
+			{ 0xff, 0x98, 0x00, 0xff },
+			{ 0xf4, 0x43, 0x36, 0xff }
+		};
+		_renderer.SetDrawColor(palette[0]);
 		_renderer.Clear();
+
+		for(int y = 0; y < chipH; ++y)
+		{
+			auto fbLine = fb.GetLine(y);
+			for(int x = 0; x < chipW; ++x)
+			{
+				u8 color = fbLine[x] & 0x03;
+				_renderer.SetDrawColor(palette[color]);
+				SDL2pp::Rect rect(offsetX + x * num, offsetY + y * num, num, num);
+				_renderer.FillRect(rect);
+			}
+		}
 		_renderer.Present();
 
 		return running;

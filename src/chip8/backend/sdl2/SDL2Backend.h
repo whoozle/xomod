@@ -17,6 +17,8 @@ namespace chip8
 
 	public:
 		SDL2Backend();
+		~SDL2Backend();
+
 		virtual bool Render(Framebuffer & fb) override;
 		virtual bool GetKeyState(u8 index) override;
 	};
