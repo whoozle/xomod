@@ -1,10 +1,7 @@
 #include <chip8/Chip8.h>
 #include <chip8/backend/terminal/TerminalBackend.h>
 #include <chip8/backend/sdl2/SDL2Backend.h>
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <ios>
+#include <chip8/File.h>
 
 using namespace chip8;
 
@@ -21,23 +18,8 @@ int main(int argc, char **argv)
 	Chip8 chip(backend);
 
 	{
-		std::ifstream file(argv[1], std::ios::binary | std::ios::ate);
-		std::streamsize size = file.tellg();
-		if (size < 0)
-		{
-			std::cerr << "could not read file " << argv[1] << std::endl;
-			return 1;
-		}
-		file.seekg(0, std::ios::beg);
-
-		std::vector<char> buffer(size);
-		if (!file.read(buffer.data(), size))
-		{
-			std::cerr << "could not read file " << argv[1] << std::endl;
-			return 1;
-		}
-
-		chip.Load(reinterpret_cast<const u8 *>(buffer.data()), buffer.size());
+		auto buffer = ReadFile(argv[1]);
+		chip.Load(buffer.data(), buffer.size());
 	}
 
 	while(chip.Tick());
