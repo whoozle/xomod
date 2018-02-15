@@ -5,6 +5,7 @@
 #include <string>
 #include <stdexcept>
 #include <thread>
+#include <stdio.h>
 
 namespace chip8
 {
@@ -316,7 +317,11 @@ namespace chip8
 				break;
 
 			case 0x75: //export flags
+				fprintf(stderr, "export flags not implemented\n");
+				break;
+
 			case 0x85: //import flags
+				fprintf(stderr, "import flags not implemented\n");
 				break;
 
 			default:
