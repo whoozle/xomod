@@ -8,6 +8,12 @@
 
 namespace chip8
 {
+	namespace
+	{
+		u16 Pack16(u8 h, u8 l)
+		{ return (static_cast<u16>(h) << 8) | l; }
+	}
+
 	void Chip8::InvalidOp(u16 op)
 	{ throw std::runtime_error("invalid instruction " + ToHex(op)); }
 
@@ -59,7 +65,7 @@ namespace chip8
 		u8 nn = _memory.Get(_pc++);
 		u8 group = hh >> 4;
 		u8 x = hh & 0x0f;
-		u16 op = (static_cast<u16>(hh) << 8) | nn; //remove it
+		u16 op = Pack16(hh, nn); //remove it
 
 		switch(group)
 		{
@@ -109,14 +115,14 @@ namespace chip8
 			break;
 
 		case 0x1: //jump NNN
-			_pc = (static_cast<u16>(x) << 8) | nn;
+			_pc = Pack16(x, nn);
 			break;
 
 		case 0x2: //call NNN
 			if (_sp >= _stack.size())
 				throw std::runtime_error("stack overflow");
 			_stack[_sp++] = _pc;
-			_pc = (static_cast<u16>(x) << 8) | nn;
+			_pc = Pack16(x, nn);
 			break;
 
 		case 0x3: //SE VX, NN
@@ -194,11 +200,11 @@ namespace chip8
 			break;
 
 		case 0xa: //MOV I, NNN
-			_i = (static_cast<u16>(x) << 8) | nn;
+			_i = Pack16(x, nn);
 			break;
 
 		case 0xb: //JUMP0 NNN
-			_pc = ((static_cast<u16>(x) << 8) | nn) + _reg[0];
+			_pc = Pack16(x, nn) + _reg[0];
 			break;
 
 		case 0xd: //sprite
@@ -244,7 +250,7 @@ namespace chip8
 			{
 			case 0x00:
 				if (x == 0)
-					{ u8 h = _memory.Get(_pc++); u8 l = _memory.Get(_pc++); _i = (static_cast<u16>(h) << 8) | l; }
+					{ u8 h = _memory.Get(_pc++); u8 l = _memory.Get(_pc++); _i = Pack16(h, l); }
 				else
 					InvalidOp(op);
 				break;
