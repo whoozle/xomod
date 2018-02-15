@@ -213,8 +213,8 @@ namespace chip8
 				case 0x4: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
 				case 0x5: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
 				case 0x7: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
-				case 0x6: { u8  r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); } break;
-				case 0xe: { u8  r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); } break;
+				case 0x6: { u8  r = _reg[y] >> 1; WriteResult(x, r, _reg[y] & 1); } break;
+				case 0xe: { u8  r = _reg[y] << 1; WriteResult(x, r, _reg[y] & 0x80); } break;
 				}
 			}
 			break;
