@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 #include <stdexcept>
+#include <thread>
 
 namespace chip8
 {
@@ -14,23 +15,13 @@ namespace chip8
 	{
 		using clock = std::chrono::high_resolution_clock;
 
-		auto checkpoint = clock::now();
+		auto started = clock::now();
 
-		unsigned counter = 0;
-		decltype(checkpoint) now;
-		unsigned dt;
-		do
-		{
-			for(unsigned i = 0; i < InstructionsPerStep; ++i)
-				Step();
+		for(unsigned i = 0; i < _speed; ++i)
+			Step();
 
-			counter += InstructionsPerStep;
+		std::this_thread::sleep_until(started + std::chrono::microseconds((uint)TimerPeriodMs));
 
-			now = clock::now();
-			dt = std::chrono::duration_cast<std::chrono::microseconds>(now - checkpoint).count();
-		} while(dt < TimerPeriodMs);
-		//printf("%u instruction per tick, %g instruction per second\n", counter, counter * 60 / (dt / 1000000.0));
-		//checkpoint += std::chrono::microseconds(static_cast<unsigned>(TimerPeriodMs));
 		if (_delay)
 			--_delay;
 

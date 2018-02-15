@@ -12,9 +12,8 @@ namespace chip8
 
 	class Chip8
 	{
-		static constexpr uint InstructionsPerStep	= 1000;
 		static constexpr uint EntryPoint			= 0x200;
-		static constexpr u8 VF							= 0x0f;
+		static constexpr u8 VF						= 0x0f;
 
 	private:
 		Backend &			_backend;
@@ -27,6 +26,7 @@ namespace chip8
 		u8					_sp;
 		u8					_planes;
 		u8					_delay;
+		uint				_speed;
 
 		void WriteResult(u8 reg, u8 value, bool carry)
 		{
@@ -62,7 +62,7 @@ namespace chip8
 		static constexpr uint TimerFreq = 60;
 		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8(Backend & backend): _backend(backend)
+		Chip8(Backend & backend, uint speed = 1000): _backend(backend), _speed(speed)
 		{ Reset(); }
 
 		void Reset()
