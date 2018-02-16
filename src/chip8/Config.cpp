@@ -23,9 +23,22 @@ namespace chip8
 			if (value.empty() || value[0] != '#')
 				throw std::runtime_error("invalid prefix for color value " + value);
 			uint r, g, b;
-			if (sscanf(value.c_str(), "#%02x%02x%02x", &r, &g, &b) != 3)
+			switch(value.size())
+			{
+			case 7:
+				if (sscanf(value.c_str(), "#%02x%02x%02x", &r, &g, &b) != 3)
+					throw std::runtime_error("invalid 7-color value " + value);
+				return Config::Color { (u8)r, (u8)g, (u8)b };
+			case 4:
+				if (sscanf(value.c_str(), "#%1x%1x%1x", &r, &g, &b) != 3)
+					throw std::runtime_error("invalid 3-color value " + value);
+				r = (r << 4) | r;
+				g = (g << 4) | g;
+				b = (b << 4) | b;
+				return Config::Color { (u8)r, (u8)g, (u8)b };
+			default:
 				throw std::runtime_error("invalid color value " + value);
-			return Config::Color { (u8)r, (u8)g, (u8)b };
+			}
 		}
 
 	}
