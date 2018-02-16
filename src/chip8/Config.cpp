@@ -47,12 +47,12 @@ namespace chip8
 			C2 = ParseColor(value);
 		else if (name == "blend")
 			BL = ParseColor(value);
-		else if (name == "buzz")
+		else if (name == "buzzer")
 			Buzz = ParseColor(value);
 		else if (name == "border")
 			Border = ParseColor(value);
 		else
-			throw std::runtime_error("unknown parameter palette." + name + "<");
+			throw std::runtime_error("unknown parameter palette." + name);
 	}
 
 	void Config::QuirksConfig::Set(const std::string& name, const std::string& value)
