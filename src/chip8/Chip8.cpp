@@ -357,11 +357,11 @@ namespace chip8
 				break;
 
 			case 0x55: //save v0-vX
-				SaveRange(0, x); if (!_config.Quirks.LoadStore) _i += x;
+				SaveRange(0, x); if (!_config.Quirks.LoadStore) _i += x + 1;
 				break;
 
 			case 0x65: //load v0-vX
-				LoadRange(0, x); if (!_config.Quirks.LoadStore) _i += x;
+				LoadRange(0, x); if (!_config.Quirks.LoadStore) _i += x + 1;
 				break;
 
 			case 0x75: //export flags
