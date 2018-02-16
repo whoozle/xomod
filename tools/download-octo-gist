@@ -1,0 +1,51 @@
+#!/usr/bin/env python2
+
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('gist')
+args = parser.parse_args()
+
+from urllib2 import urlopen
+import json
+
+gist = args.gist
+data = urlopen("https://api.github.com/gists/" + gist)
+data = json.load(data)
+
+with open(gist + ".gist", "w") as f:
+	f.write(json.dumps(data, sort_keys = True, indent=2))
+
+with open(gist + ".o8", "w") as f:
+	f.write(data['files']['prog.ch8']['content'])
+
+options = json.loads(data['files']['options.json']['content'])
+with open(gist + ".options", "w") as f:
+	f.write(json.dumps(options, sort_keys = True, indent=2))
+
+qnames = ["shiftQuirks", "loadStoreQuirks", "vfOrderQuirks", "clipQuirks", "jumpQuirks"]
+quirks = []
+for name in qnames:
+	if name in options:
+		if options[name]:
+			quirks.append("%s = on" %(name[:-6].lower()))
+
+if quirks:
+	options['quirks'] = "\n[quirks]\n" + "\n".join(quirks) + "\n"
+else:
+	options['quirks'] = ""
+
+with open(gist + ".ini", "w") as f:
+	f.write(\
+"""[core]
+speed = {tickrate}
+{quirks}
+[palette]
+bg     = {backgroundColor}
+color1 = {fillColor}
+color2 = {fillColor2}
+blend  = {blendColor}
+buzzer = {buzzColor}
+border = {quietColor}
+""" \
+.format(**options))
