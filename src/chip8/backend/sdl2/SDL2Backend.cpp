@@ -1,5 +1,6 @@
 #include <chip8/backend/sdl2/SDL2Backend.h>
 #include <chip8/Audio.h>
+#include <chip8/Config.h>
 #include <chip8/Framebuffer.h>
 #include <SDL2pp/AudioSpec.hh>
 #include <SDL.h>
@@ -86,13 +87,13 @@ namespace chip8
 		if  (denom > 1)
 			return running;
 
+		auto & P = _config.Palette;
 		static SDL_Color palette[4] =
 		{
-			{ 0x28, 0x35, 0x93, 0xff },
-			{ 0x4c, 0xaf, 0x50, 0xff },
-			//{ 0xff, 0x98, 0x00, 0xff },
-			{ 0xf4, 0x43, 0x36, 0xff },
-			{ 0xe0, 0xe0, 0xe0, 0xff },
+			{ P.BG.R, P.BG.G, P.BG.B, 0xff },
+			{ P.C1.R, P.C1.G, P.C1.B, 0xff },
+			{ P.C2.R, P.C2.G, P.C2.B, 0xff },
+			{ P.BL.R, P.BL.G, P.BL.B, 0xff },
 		};
 		_renderer.SetDrawColor(palette[0]);
 		_renderer.Clear();
