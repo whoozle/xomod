@@ -26,3 +26,9 @@ qwer
 asdf
 zxcv
 ```
+
+# Well-known games gist ids
+
+* Skyward, 8cf4cc3b15df836471d8a157eb7f5b4b
+* Kesha was bird (the latest version with no keyboard warning), 75b2da4b0820c49b1412
+* Kesha was biird, 3c3d86bfb79e84c66c969f505264485c
