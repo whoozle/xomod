@@ -31,14 +31,15 @@ namespace chip8
 			if (eq == text.npos)
 				throw std::runtime_error("unexpected end while reading value name");
 
-			auto nameEnd = text.find_last_of(WS, eq);
-			std::string name = text.substr(pos, nameEnd - pos);
+			auto nameEnd = text.find_last_not_of(WS, eq - 1, eq - pos);
+			std::string name = text.substr(pos, nameEnd - pos + 1);
 
 			pos = SkipWS(text, eq + 1);
 
 			auto lineEnd = NextLine(text, pos);
-			auto valueEnd = text.find_last_of(WS, lineEnd);
-			std::string value = text.substr(pos, valueEnd - pos);
+			auto valueEnd = text.find_last_not_of(WS, lineEnd - 1, lineEnd - pos);
+			std::string value = text.substr(pos, valueEnd - pos + 1);
+			//printf("'%s' '%s'\n", name.c_str(), value.c_str());
 			static_cast<Handler *>(this)->OnValue(_currentSection, name, value);
 			return lineEnd;
 		}
