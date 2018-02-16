@@ -9,6 +9,17 @@ A lot of games are available on http://www.awfuljams.com/
 This emulator was designed to be modular and simple, suitable for running in embedded environments or in terminal, using pseudographics.
 Minimalistic backend API is allowing easy porting to new platforms or ways to render graphics. 
 
+## How to build
+
+```
+mkdir build
+cd build
+cmake ..
+make
+cd ..
+./build/xomod games/kesha_was_bird.ch8
+```
+
 ## Notes on Specific Backends
 
 ### Linux Console
