@@ -74,7 +74,9 @@ namespace chip8
 						case SDLK_EQUALS:
 							if (state)
 							{
-								_window.SetSize((num + 1)* fb.GetWidth(), (num + 1) * fb.GetHeight());
+								int w = (num + 1)* fb.GetWidth(), h = (num + 1) * fb.GetHeight();
+								fprintf(stderr, "setting window size to %dx%d\n", w, h);
+								_window.SetSize(w, h);
 								CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
 							}
 							break;
@@ -82,7 +84,9 @@ namespace chip8
 						case SDLK_MINUS:
 							if (state && num > 1)
 							{
-								_window.SetSize((num - 1)* fb.GetWidth(), (num - 1) * fb.GetHeight());
+								int w = (num - 1)* fb.GetWidth(), h = (num - 1) * fb.GetHeight();
+								fprintf(stderr, "setting window size to %dx%d\n", w, h);
+								_window.SetSize(w, h);
 								CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
 							}
 							break;
