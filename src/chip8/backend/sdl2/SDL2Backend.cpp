@@ -110,14 +110,23 @@ namespace chip8
 			return running;
 
 		auto & P = _config.Palette;
-		static SDL_Color palette[4] =
+
+		SDL_Color palette[4] =
 		{
 			{ P.BG.R, P.BG.G, P.BG.B, 0xff },
 			{ P.C1.R, P.C1.G, P.C1.B, 0xff },
 			{ P.C2.R, P.C2.G, P.C2.B, 0xff },
 			{ P.BL.R, P.BL.G, P.BL.B, 0xff },
 		};
-		_renderer.SetDrawColor(palette[0]);
+
+		SDL_Color border[2] =
+		{
+			{ P.Border.R, P.Border.G, P.Border.B, 0xff },
+			{ P.Buzz.R, P.Buzz.G, P.Buzz.B, 0xff },
+		};
+
+		bool buzz = _audio? _audio->GetCurrentBit(): false;
+		_renderer.SetDrawColor(border[buzz? 1: 0]);
 		_renderer.Clear();
 
 		for(int y = 0; y < chipH; ++y)

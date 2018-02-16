@@ -33,6 +33,9 @@ namespace chip8
 		void SetBaseAddr(u16 addr)
 		{ _baseAddr = addr; _offset = 0; _currentBitOffset = 0; UpdateCurrentBit(); }
 
+		bool GetCurrentBit() const
+		{ return _currentBit; }
+
 		void Generate(uint freq, s16 *samples, uint n);
 	};
 };
