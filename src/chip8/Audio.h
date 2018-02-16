@@ -10,7 +10,7 @@ namespace chip8
 	class Audio
 	{
 		static constexpr uint	SamplingFreq	= 4000;
-		static constexpr s16	VolumeMin		= 22000;
+		static constexpr s16	VolumeMin		= 29000;
 		static constexpr s16	VolumeMax		= 30000;
 
 		const Memory &	_memory;
