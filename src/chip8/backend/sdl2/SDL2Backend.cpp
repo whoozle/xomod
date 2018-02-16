@@ -7,7 +7,8 @@
 
 namespace chip8
 {
-	SDL2Backend::SDL2Backend():
+	SDL2Backend::SDL2Backend(Config & config):
+		_config(config),
 		_sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_EVENTS),
 		_window("CHIP8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_RESIZABLE),
 		_renderer(_window, -1, SDL_RENDERER_ACCELERATED),

@@ -2,6 +2,7 @@
 #include <chip8/backend/terminal/TerminalBackend.h>
 #include <chip8/backend/sdl2/SDL2Backend.h>
 #include <chip8/File.h>
+#include <chip8/Config.h>
 
 using namespace chip8;
 
@@ -14,12 +15,27 @@ int main(int argc, char **argv)
 	}
 
 	//TerminalBackend backend;
-	SDL2Backend backend;
-	Chip8 chip(backend);
+	Config config;
+	SDL2Backend backend(config);
+	Chip8 chip(config, backend);
 
+	std::string romFile = argv[1];
 	{
-		auto buffer = ReadFile<std::vector<u8>>(argv[1]);
+		File rom(romFile);
+		auto buffer = rom.ReadAll<std::vector<u8>>();
 		chip.Load(buffer.data(), buffer.size());
+	}
+	auto dotPos = romFile.rfind('.');
+	if (dotPos != romFile.npos)
+	{
+		std::string configFile = romFile.substr(0, dotPos + 1) + "ini";
+		if (File::Exists(configFile))
+		{
+			File cfg(configFile);
+			auto data = cfg.ReadAll<std::vector<char>>();
+			std::string text(data.begin(), data.end());
+			config.Parse(text);
+		}
 	}
 
 	while(chip.Tick());

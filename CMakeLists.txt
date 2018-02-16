@@ -19,6 +19,7 @@ set(OCTO_SOURCES
 
 	src/chip8/Audio.cpp
 	src/chip8/Chip8.cpp
+	src/chip8/Config.cpp
 	src/chip8/Memory.cpp
 	src/main.cpp
 )

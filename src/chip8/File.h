@@ -29,28 +29,32 @@ namespace chip8
 
 		size_t Read(void *data, size_t size)
 		{ return fread(data, 1, size, _f); }
+
+		template<typename Container>
+		Container ReadAll()
+		{
+			Container data;
+
+			size_t offset = 0;
+			static constexpr size_t Step = 0x10000;
+
+			size_t r;
+			do
+			{
+				data.resize(offset + Step);
+				r = Read(data.data() + offset, Step);
+				offset += r;
+			}
+			while(r == Step);
+			data.resize(offset);
+			return data;
+		}
+
+		static bool Exists(const std::string &path)
+		{ return access(path.c_str(), F_OK) == 0; }
+
 	};
 
-	template<typename Container>
-	Container ReadFile(const std::string &path)
-	{
-		File file(path);
-		Container data;
-
-		size_t offset = 0;
-		static constexpr size_t Step = 0x10000;
-
-		size_t r;
-		do
-		{
-			data.resize(offset + Step);
-			r = file.Read(data.data() + offset, Step);
-			offset += r;
-		}
-		while(r == Step);
-		data.resize(offset);
-		return data;
-	}
 }
 
 #endif

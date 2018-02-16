@@ -11,6 +11,7 @@
 namespace chip8
 {
 	class Backend;
+	class Config;
 
 	class Chip8
 	{
@@ -18,6 +19,7 @@ namespace chip8
 		static constexpr u8 VF						= 0x0f;
 
 	private:
+		Config &			_config;
 		Backend &			_backend;
 		Memory				_memory;
 		Framebuffer			_framebuffer;
@@ -72,7 +74,8 @@ namespace chip8
 		static constexpr uint TimerFreq = 60;
 		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8(Backend & backend, uint speed = 1000):
+		Chip8(Config & config, Backend & backend, uint speed = 1000):
+			_config(config),
 			_backend(backend),
 			_audio(_memory),
 			_speed(speed),

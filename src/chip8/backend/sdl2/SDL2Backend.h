@@ -10,10 +10,12 @@
 
 namespace chip8
 {
+	class Config;
 	class SDL2Backend : public Backend
 	{
 		static constexpr uint SampleFreq = 44100;
 
+		Config &					_config;
 		SDL2pp::SDL					_sdl;
 		SDL2pp::Window				_window;
 		SDL2pp::Renderer			_renderer;
@@ -28,7 +30,7 @@ namespace chip8
 		void Generate(Uint8* stream, int len);
 
 	public:
-		SDL2Backend();
+		SDL2Backend(Config & config);
 		~SDL2Backend();
 
 		bool Render(Framebuffer & fb) override;
