@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	Chip8 chip(backend);
 
 	{
-		auto buffer = ReadFile(argv[1]);
+		auto buffer = ReadFile<std::vector<u8>>(argv[1]);
 		chip.Load(buffer.data(), buffer.size());
 	}
 

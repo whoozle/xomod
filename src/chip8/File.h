@@ -31,10 +31,11 @@ namespace chip8
 		{ return fread(data, 1, size, _f); }
 	};
 
-	inline std::vector<u8> ReadFile(const std::string &path)
+	template<typename Container>
+	Container ReadFile(const std::string &path)
 	{
 		File file(path);
-		std::vector<u8> data;
+		Container data;
 
 		size_t offset = 0;
 		static constexpr size_t Step = 0x10000;
