@@ -35,6 +35,7 @@ namespace chip8
 		uint				_speed;
 		bool				_running;
 		bool				_waitingInput;
+		bool				_waitingInputFinished;
 		u8					_inputReg;
 
 		std::default_random_engine _randomGenerator;

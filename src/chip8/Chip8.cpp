@@ -27,21 +27,23 @@ namespace chip8
 
 		if (_waitingInput)
 		{
+			bool anyKeyActive = false;
 			for(u8 i = 0; i < 16; ++i)
 			{
 				if (_backend.GetKeyState(i))
 				{
 					_reg.at(_inputReg) = i;
-					_waitingInput = false;
+					anyKeyActive = true;
+					_waitingInputFinished = true;
 				}
 			}
+			if (_waitingInputFinished && !anyKeyActive)
+				_waitingInput = false;
 		}
 
-		if (!_waitingInput)
-		{
-			for(unsigned i = 0; i < _speed && _running; ++i)
-				Step();
-		}
+		uint n = _speed;
+		while (n-- && !_waitingInput && _running)
+			Step();
 
 		if (!_running)
 			return false;
@@ -321,6 +323,7 @@ namespace chip8
 
 			case 0x0a: //vX = key
 				_waitingInput = true;
+				_waitingInputFinished = false;
 				_inputReg = x;
 				break;
 
