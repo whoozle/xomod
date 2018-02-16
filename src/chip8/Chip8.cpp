@@ -1,4 +1,5 @@
 #include <chip8/Chip8.h>
+#include <chip8/Config.h>
 #include <chip8/String.h>
 #include <chip8/Backend.h>
 #include <chrono>
@@ -213,8 +214,22 @@ namespace chip8
 				case 0x4: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
 				case 0x5: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
 				case 0x7: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
-				case 0x6: { u8  r = _reg[y] >> 1; WriteResult(x, r, _reg[y] & 1); } break;
-				case 0xe: { u8  r = _reg[y] << 1; WriteResult(x, r, _reg[y] & 0x80); } break;
+				case 0x6:
+					{
+						if (!_config.Quirks.Shift)
+						{ u8  r = _reg[y] >> 1; WriteResult(x, r, _reg[y] & 1); }
+						else
+						{ u8  r = _reg[x] >> 1; WriteResult(x, r, _reg[x] & 1); }
+					}
+					break;
+				case 0xe:
+					{
+						if (!_config.Quirks.Shift)
+						{ u8  r = _reg[y] << 1; WriteResult(x, r, _reg[y] & 0x80); }
+						else
+						{ u8  r = _reg[x] << 1; WriteResult(x, r, _reg[x] & 0x80); }
+					}
+					break;
 				}
 			}
 			break;
@@ -339,11 +354,11 @@ namespace chip8
 				break;
 
 			case 0x55: //save v0-vX
-				SaveRange(0, x); _i += x; //quirks
+				SaveRange(0, x); if (!_config.Quirks.LoadStore) _i += x;
 				break;
 
 			case 0x65: //load v0-vX
-				LoadRange(0, x); _i += x;
+				LoadRange(0, x); if (!_config.Quirks.LoadStore) _i += x;
 				break;
 
 			case 0x75: //export flags
