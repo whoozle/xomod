@@ -33,6 +33,10 @@ namespace chip8
 
 	bool SDL2Backend::Render(Framebuffer & fb)
 	{
+		int chipW = fb.GetWidth(), chipH = fb.GetHeight();
+		int num, denom, offsetX, offsetY;
+		CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
+
 		bool running = true;
 		{
 			SDL_Event event;
@@ -65,6 +69,23 @@ namespace chip8
 						case SDLK_x: _keys[0x0] = state; break;
 						case SDLK_c: _keys[0xb] = state; break;
 						case SDLK_v: _keys[0xf] = state; break;
+
+						case SDLK_PLUS:
+						case SDLK_EQUALS:
+							if (state)
+							{
+								_window.SetSize((num + 1)* fb.GetWidth(), (num + 1) * fb.GetHeight());
+								CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
+							}
+							break;
+
+						case SDLK_MINUS:
+							if (state && num > 1)
+							{
+								_window.SetSize((num - 1)* fb.GetWidth(), (num - 1) * fb.GetHeight());
+								CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
+							}
+							break;
 						case SDLK_RETURN:
 							if (state && (event.key.keysym.mod & KMOD_LALT))
 							{
@@ -80,9 +101,6 @@ namespace chip8
 			}
 		}
 
-		int chipW = fb.GetWidth(), chipH = fb.GetHeight();
-		int num, denom, offsetX, offsetY;
-		CalculateZoom(num, denom, offsetX, offsetY, _window.GetWidth(), _window.GetHeight(), chipW, chipH);
 		//printf("num %d, offset: %d, %d\n", num, offsetX, offsetY);
 		if  (denom > 1)
 			return running;
