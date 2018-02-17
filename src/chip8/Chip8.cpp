@@ -9,6 +9,16 @@
 #include <stdio.h>
 
 //make runtime option?
+#define LOG_INSTRUCTIONS 0
+
+#if LOG_INSTRUCTIONS
+#	define TRACE(...) do { printf("%04x: ", _pc - 2); printf(__VA_ARGS__); printf("\n"); } while(false)
+#	define TRACEI(...) do { printf("%04x: %04x ", _pc - 2, op); printf(__VA_ARGS__); printf("\n"); } while(false)
+#else
+#	define TRACE(...)
+#	define TRACEI(...)
+#endif
+
 #define LOG_DELAY_LOOPS 0
 
 namespace chip8
@@ -37,6 +47,8 @@ namespace chip8
 				{
 					_reg.at(_inputReg) = i;
 					anyKeyActive = true;
+					if (!_waitingInputFinished)
+						TRACE("v%x = %u\n", _inputReg, i);
 					_waitingInputFinished = true;
 				}
 			}
@@ -124,35 +136,45 @@ namespace chip8
 				switch(nn)
 				{
 					case 0x00:
+						TRACEI("halt");
 						Halt();
 						break;
 					case 0xc0 ... 0xcf:
+						TRACEI("scroll-down %d", nn & 0x0f);
 						_framebuffer.Scroll(0, nn & 0x0f); //down n pixels
 						break;
 					case 0xd0 ... 0xdf:
+						TRACEI("scroll-up %d", nn & 0x0f);
 						_framebuffer.Scroll(0, -(nn & 0x0f)); //down n pixels
 						break;
 					case 0xe0: //clear
+						TRACEI("clear");
 						_framebuffer.Clear();
 						break;
 					case 0xee: //ret
+						TRACEI("ret");
 						if (_sp == 0)
 							InvalidOp(op); //stack overflow, replace method
 						_pc = _stack[--_sp];
 						break;
 					case 0xfb: //scroll right 4
+						TRACEI("scroll-right");
 						_framebuffer.Scroll(4, 0);
 						break;
 					case 0xfc: //scroll left 4
+						TRACEI("scroll-left");
 						_framebuffer.Scroll(-4, 0);
 						break;
 					case 0xfd: //halt
+						TRACEI("exit");
 						Halt();
 						break;
 					case 0xfe: //lores
+						TRACEI("lores");
 						_framebuffer.SetResolution(64, 32);
 						break;
 					case 0xff: //hires
+						TRACEI("hires");
 						_framebuffer.SetResolution(128, 64);
 						break;
 					default:
@@ -166,10 +188,12 @@ namespace chip8
 			break;
 
 		case 0x1: //jump NNN
+			TRACEI("jump %u", Pack16(x, nn));
 			_pc = Pack16(x, nn);
 			break;
 
 		case 0x2: //call NNN
+			TRACEI("call %u", Pack16(x, nn));
 			if (_sp >= _stack.size())
 				throw std::runtime_error("stack overflow");
 			_stack[_sp++] = _pc;
@@ -177,11 +201,13 @@ namespace chip8
 			break;
 
 		case 0x3: //SE VX, NN
+			TRACEI("skip-eq v%x 0x%02x", x, nn);
 			if (_reg[x] == nn)
 				SkipNext();
 			break;
 
 		case 0x4: //SNE VX, NN
+			TRACEI("skip-ne v%x 0x%02x", x, nn);
 			if (_reg[x] != nn)
 				SkipNext();
 			break;
@@ -193,15 +219,18 @@ namespace chip8
 				switch(z)
 				{
 				case 0: //SE VX, VY
+					TRACEI("skip-e v%x v%x", x, y);
 					if (_reg[x] == _reg[y])
 						SkipNext();
 					break;
 
 				case 2: //SAVE VX-VY range
+					TRACEI("save v%x-v%x", x, y);
 					SaveRange(x, y);
 					break;
 
 				case 3: //LOAD VX-VY range
+					TRACEI("load v%x-v%x", x, y);
 					LoadRange(x, y);
 					break;
 
@@ -212,10 +241,12 @@ namespace chip8
 			break;
 
 		case 0x6: //LD VX, NN
+			TRACEI("v%x := 0x%02x", x, nn);
 			_reg[x] = nn;
 			break;
 
 		case 0x7:
+			TRACEI("v%x += 0x%02x", x, nn);
 			_reg[x] += nn;
 			break;
 
@@ -225,15 +256,16 @@ namespace chip8
 				u8 z = nn & 0x0f;
 				switch(z)
 				{
-				case 0x0: _reg[x]  = _reg[y]; break;
-				case 0x1: _reg[x] |= _reg[y]; break;
-				case 0x2: _reg[x] &= _reg[y]; break;
-				case 0x3: _reg[x] ^= _reg[y]; break;
-				case 0x4: { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
-				case 0x5: { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
-				case 0x7: { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
+				case 0x0: TRACE("v%x = v%x\n", x, y);  _reg[x]  = _reg[y]; break;
+				case 0x1: TRACE("v%x |= v%x\n", x, y); _reg[x] |= _reg[y]; break;
+				case 0x2: TRACE("v%x &= v%x\n", x, y); _reg[x] &= _reg[y]; break;
+				case 0x3: TRACE("v%x ^= v%x\n", x, y); _reg[x] ^= _reg[y]; break;
+				case 0x4: TRACE("v%x += v%x\n", x, y); { u16 r = _reg[x] + _reg[y]; WriteResult(x, r & 0xff, r > 0xff); } break;
+				case 0x5: TRACE("v%x -= v%x\n", x, y); { u8  r = _reg[x] - _reg[y]; WriteResult(x, r, _reg[x] >= _reg[y]); } break;
+				case 0x7: TRACE("v%x =- v%x\n", x, y); { u8  r = _reg[y] - _reg[x]; WriteResult(x, r, _reg[y] >= _reg[x]); } break;
 				case 0x6:
 					{
+						TRACE("v%x >> v%x\n", x, y);
 						if (!_config.Quirks.Shift)
 						{ u8  r = _reg[y] >> 1; WriteResult(x, r, _reg[y] & 1); }
 						else
@@ -242,6 +274,7 @@ namespace chip8
 					break;
 				case 0xe:
 					{
+						TRACE("v%x << v%x\n", x, y);
 						if (!_config.Quirks.Shift)
 						{ u8  r = _reg[y] << 1; WriteResult(x, r, _reg[y] & 0x80); }
 						else
@@ -256,6 +289,9 @@ namespace chip8
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
+
+				TRACEI("skip-ne v%x v%x ; z = %u", x, y, z);
+
 				if (z != 0)
 					InvalidOp(op);
 
@@ -265,14 +301,17 @@ namespace chip8
 			break;
 
 		case 0xa: //MOV I, NNN
+			TRACEI("i := %u", Pack16(x, nn));
 			_i = Pack16(x, nn);
 			break;
 
 		case 0xb: //JUMP0 NNN
+			TRACEI("jump0 %u", Pack16(x, nn));
 			_pc = Pack16(x, nn) + _reg[0];
 			break;
 
 		case 0xc:
+			TRACEI("random %u", nn);
 			_reg[x] = _randomDistribution(_randomGenerator) & nn;
 			break;
 
@@ -280,6 +319,7 @@ namespace chip8
 			{
 				u8 y = nn >> 4;
 				u8 z = nn & 0x0f;
+				TRACEI("sprite v%x v%x %u", x, y, z);
 				u8 xp = _reg[x];
 				u8 yp = _reg[y];
 				switch(_planes)
@@ -302,10 +342,12 @@ namespace chip8
 			switch(nn)
 			{
 			case 0x9e:
+				TRACEI("skip v%x key", x);
 				if (_backend.GetKeyState(_reg[x]))
 					SkipNext();
 				break;
 			case 0xa1:
+				TRACEI("skip v%x -key", x);
 				if (!_backend.GetKeyState(_reg[x]))
 					SkipNext();
 				break;
@@ -319,53 +361,68 @@ namespace chip8
 			{
 			case 0x00:
 				if (x == 0)
-					{ u8 h = _memory.Get(_pc++); u8 l = _memory.Get(_pc++); _i = Pack16(h, l); }
+				{
+					u8 h = _memory.Get(_pc++);
+					u8 l = _memory.Get(_pc++);
+					_i = Pack16(h, l);
+					TRACEI("i := long 0x%04x", _i);
+				}
 				else
 					InvalidOp(op);
 				break;
 
 			case 0x01: //plane
+				TRACEI("plane %u", x);
 				_planes = x & 0x03;
 				break;
 
 			case 0x02: //audio
+				TRACEI("audio");
 				_audio.SetBaseAddr(_i);
 				break;
 
 			case 0x07: //vX = delay
 				_reg[x] = _delay;
+				TRACEI("v%x = delay ; %u\n", x, _delay);
 				_delayRead = true;
 				break;
 
 			case 0x0a: //vX = key
+				TRACEI("v%x := key", x);
 				_waitingInput = true;
 				_waitingInputFinished = false;
 				_inputReg = x;
 				break;
 
 			case 0x15: //delay vX
+				TRACEI("delay := v%x", x);
 				_delay = _reg[x];
 				break;
 
 			case 0x18: //buzzer vX
+				TRACEI("buzzer := v%x", x);
 				_buzzer = _reg[x];
 				_backend.SetAudio(_buzzer? &_audio: nullptr);
 				break;
 
 			case 0x1e: //i += vX
+				TRACEI("i += v%x", x);
 				_i += _reg[x];
 				break;
 
 			case 0x29: //hex
+				TRACEI("i = hex v%x", x);
 				_i = Memory::FontOffset + (_reg[x] & 0xf) * 5;
 				break;
 
 			case 0x30: //bighex
+				TRACEI("i = bighex v%x", x);
 				_i = Memory::BigFontOffset + (_reg[x] & 0xf) * 10;
 				break;
 
 			case 0x33: //bcd
 				{
+					TRACEI("bcd v%x", x);
 					_memory.Set(_i + 0, (_reg[x] / 100) % 10);
 					_memory.Set(_i + 1, (_reg[x] / 10) % 10);
 					_memory.Set(_i + 2, _reg[x] % 10);
@@ -373,18 +430,22 @@ namespace chip8
 				break;
 
 			case 0x55: //save v0-vX
+				TRACEI("save v%x", x);
 				SaveRange(0, x); if (!_config.Quirks.LoadStore) _i += x + 1;
 				break;
 
 			case 0x65: //load v0-vX
+				TRACEI("load v%x", x);
 				LoadRange(0, x); if (!_config.Quirks.LoadStore) _i += x + 1;
 				break;
 
 			case 0x75: //export flags
+				TRACEI("saveflags v%x", x);
 				_config.SaveFlags(_reg.data(), x + 1);
 				break;
 
 			case 0x85: //import flags
+				TRACEI("loadflags v%x", x);
 				_config.LoadFlags(_reg.data(), x + 1);
 				break;
 
