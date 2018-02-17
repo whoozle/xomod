@@ -15,6 +15,7 @@ namespace chip8
 		_renderer(_window, -1, SDL_RENDERER_ACCELERATED),
 		_spec(SampleFreq, AUDIO_S16, 1, SampleFreq / 60),
 		_audio(nullptr),
+		_keys(),
 		_audioDevice
 		(
 			SDL2pp::Optional<std::string>(), false,
