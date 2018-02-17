@@ -59,7 +59,7 @@ namespace chip8
 			if (x < y)
 				for(u8 i = 0; i <= y - x; ++i) _memory.Set(_i + i, _reg[x + i]);
 			else
-				for(u8 i = 0; i <= x - y; ++i) _memory.Set(_i + i, _reg[y + i]);
+				for(u8 i = 0; i <= x - y; ++i) _memory.Set(_i + i, _reg[x - i]);
 		}
 
 		void LoadRange(u8 x, u8 y)
@@ -67,7 +67,7 @@ namespace chip8
 			if (x < y)
 				for(u8 i = 0; i <= y - x; ++i) _reg[x + i] = _memory.Get(_i + i);
 			else
-				for(u8 i = 0; i <= x - y; ++i) _reg[y + i] = _memory.Get(_i + i);
+				for(u8 i = 0; i <= x - y; ++i) _reg[x - i] = _memory.Get(_i + i);
 		}
 
 		bool Sprite(u8 plane, u8 x, u8 y, u8 h, u16 i);
