@@ -3,6 +3,7 @@
 
 #include <chip8/IniFileParser.h>
 #include <chip8/types.h>
+#include <array>
 
 namespace chip8
 {
@@ -58,6 +59,10 @@ namespace chip8
 			void Set(const std::string &name, const std::string &value);
 		}
 		Palette;
+
+		std::array<u8, 8> Flags;
+
+		Config(): Flags() { }
 
 		void SaveFlags(const u8 *data, u8 n);
 		void LoadFlags(u8 *data, u8 n);

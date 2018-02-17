@@ -118,22 +118,29 @@ namespace chip8
 
 	void Config::SaveFlags(const u8 * data, u8 n)
 	{
+		if (n > Flags.size())
+			n = Flags.size();
+
+		memcpy(Flags.data(), data, n);
 		auto configDir = GetConfigPath();
 		File file(configDir + "/" + RomName + ".flags", "wb");
-		file.Write(data, n);
+		file.Write(Flags.data(), Flags.size());
 	}
 
 	void Config::LoadFlags(u8 *data, u8 n)
 	{
+		if (n > Flags.size())
+			n = Flags.size();
+
 		auto configDir = GetConfigPath();
 		auto flagsFile = configDir + "/" + RomName + ".flags";
 
-		memset(data, 0, n);
 		if (File::Exists(flagsFile))
 		{
 			File file(flagsFile, "rb");
-			file.Read(data, n);
+			file.Read(Flags.data(), Flags.size());
 		}
+		memcpy(data, Flags.data(), n);
 	}
 
 }
