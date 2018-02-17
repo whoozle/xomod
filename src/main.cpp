@@ -26,12 +26,22 @@ int main(int argc, char **argv)
 		chip.Load(buffer.data(), buffer.size());
 	}
 	auto dotPos = romFile.rfind('.');
-	if (dotPos != romFile.npos)
-		config.RomName = romFile.substr(0, dotPos);
-	else
-		config.RomName = romFile;
 
-	std::string configFile = config.RomName + ".ini";
+	std::string prefix;
+	if (dotPos != romFile.npos)
+		prefix = romFile.substr(0, dotPos);
+	else
+		prefix = romFile;
+	{
+		auto slash = prefix.rfind('/');
+		if (slash == prefix.npos)
+			slash = 0;
+		else
+			++slash;
+		config.RomName = prefix.substr(slash);
+	}
+
+	std::string configFile = prefix + ".ini";
 	if (File::Exists(configFile))
 	{
 		File cfg(configFile, "rt");

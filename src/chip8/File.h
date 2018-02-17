@@ -30,7 +30,7 @@ namespace chip8
 		size_t Read(void *data, size_t size)
 		{ return fread(data, 1, size, _f); }
 
-		size_t Write(void *data, size_t size)
+		size_t Write(const void *data, size_t size)
 		{ return fwrite(data, 1, size, _f); }
 
 		template<typename Container>

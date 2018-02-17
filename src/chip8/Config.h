@@ -58,7 +58,11 @@ namespace chip8
 		}
 		Palette;
 
+		void SaveFlags(const u8 *data, u8 n);
+		void LoadFlags(u8 *data, u8 n);
+
 	private:
+		std::string GetConfigPath();
 		friend class IniFileParser<Config>;
 		void OnValue(const std::string &section, const std::string &name, const std::string &value);
 

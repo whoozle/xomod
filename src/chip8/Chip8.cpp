@@ -361,11 +361,11 @@ namespace chip8
 				break;
 
 			case 0x75: //export flags
-				fprintf(stderr, "export flags not implemented\n");
+				_config.SaveFlags(_reg.data(), x + 1);
 				break;
 
 			case 0x85: //import flags
-				fprintf(stderr, "import flags not implemented\n");
+				_config.LoadFlags(_reg.data(), x + 1);
 				break;
 
 			default:

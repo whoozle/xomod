@@ -1,5 +1,8 @@
 #include <chip8/Config.h>
+#include <chip8/File.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 namespace chip8
 {
@@ -95,6 +98,40 @@ namespace chip8
 			Palette.Set(name, value);
 		else
 			throw std::runtime_error("unknown section " + section);
+	}
+
+	std::string Config::GetConfigPath()
+	{
+		const char *home = getenv("HOME");
+		if (home == NULL)
+			home = ".";
+		std::string local = std::string(home) + "/.local";
+		mkdir(local.c_str(), 0770);
+		std::string share = local + "/share";
+		mkdir(share.c_str(), 0770);
+		std::string xomod = share + "/xomod";
+		mkdir(xomod.c_str(), 0770);
+		return xomod;
+	}
+
+	void Config::SaveFlags(const u8 * data, u8 n)
+	{
+		auto configDir = GetConfigPath();
+		File file(configDir + "/" + RomName + ".flags", "wb");
+		file.Write(data, n);
+	}
+
+	void Config::LoadFlags(u8 *data, u8 n)
+	{
+		auto configDir = GetConfigPath();
+		auto flagsFile = configDir + "/" + RomName + ".flags";
+
+		memset(data, 0, n);
+		if (File::Exists(flagsFile))
+		{
+			File file(flagsFile, "rb");
+			file.Read(data, n);
+		}
 	}
 
 }
