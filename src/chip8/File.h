@@ -15,7 +15,7 @@ namespace chip8
 	{
 		FILE *	_f;
 	public:
-		File(const std::string &path) : _f(fopen(path.c_str(), "rb"))
+		File(const std::string &path, const std::string &mode) : _f(fopen(path.c_str(), mode.c_str()))
 		{
 			if (!_f)
 				throw std::runtime_error("could not open file " + path);
@@ -29,6 +29,9 @@ namespace chip8
 
 		size_t Read(void *data, size_t size)
 		{ return fread(data, 1, size, _f); }
+
+		size_t Write(void *data, size_t size)
+		{ return fwrite(data, 1, size, _f); }
 
 		template<typename Container>
 		Container ReadAll()

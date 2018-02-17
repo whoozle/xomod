@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
 	std::string romFile = argv[1];
 	{
-		File rom(romFile);
+		File rom(romFile, "rb");
 		auto buffer = rom.ReadAll<std::vector<u8>>();
 		chip.Load(buffer.data(), buffer.size());
 	}
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 		std::string configFile = romFile.substr(0, dotPos + 1) + "ini";
 		if (File::Exists(configFile))
 		{
-			File cfg(configFile);
+			File cfg(configFile, "rt");
 			auto data = cfg.ReadAll<std::vector<char>>();
 			std::string text(data.begin(), data.end());
 			config.Parse(text);
