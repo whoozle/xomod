@@ -27,15 +27,17 @@ int main(int argc, char **argv)
 	}
 	auto dotPos = romFile.rfind('.');
 	if (dotPos != romFile.npos)
+		config.RomName = romFile.substr(0, dotPos);
+	else
+		config.RomName = romFile;
+
+	std::string configFile = config.RomName + ".ini";
+	if (File::Exists(configFile))
 	{
-		std::string configFile = romFile.substr(0, dotPos + 1) + "ini";
-		if (File::Exists(configFile))
-		{
-			File cfg(configFile, "rt");
-			auto data = cfg.ReadAll<std::vector<char>>();
-			std::string text(data.begin(), data.end());
-			config.Parse(text);
-		}
+		File cfg(configFile, "rt");
+		auto data = cfg.ReadAll<std::vector<char>>();
+		std::string text(data.begin(), data.end());
+		config.Parse(text);
 	}
 
 	while(chip.Tick());

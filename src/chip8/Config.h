@@ -8,6 +8,8 @@ namespace chip8
 {
 	struct Config : public IniFileParser<Config>
 	{
+		std::string RomName;
+
 		struct CoreConfig
 		{
 			uint Speed;
