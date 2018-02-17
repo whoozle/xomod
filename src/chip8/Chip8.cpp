@@ -64,13 +64,11 @@ namespace chip8
 		return running;
 	}
 
-	bool Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h)
+	bool Chip8::Sprite(u8 plane, u8 x, u8 y, u8 h, u16 i)
 	{
 		bool collision = false;
-		u16 i = _i;
 		if (h == 0) //16x16 mode
 		{
-			i += 32 * plane;
 			for(h = 16; h--; ++y)
 			{
 				collision |= _framebuffer.Write(plane, y, x, _memory.Get(i++));
@@ -79,7 +77,6 @@ namespace chip8
 		}
 		else
 		{
-			i += h * plane;
 			while(h--)
 				collision |= _framebuffer.Write(plane, y++, x, _memory.Get(i++));
 		}
@@ -269,14 +266,14 @@ namespace chip8
 				switch(_planes)
 				{
 					case 1:
-						_reg[VF]  = Sprite(0, xp, yp, z);
+						_reg[VF]  = Sprite(0, xp, yp, z, _i);
 						break;
 					case 2:
-						_reg[VF]  = Sprite(1, xp, yp, z);
+						_reg[VF]  = Sprite(1, xp, yp, z, _i);
 						break;
 					case 3:
-						_reg[VF]  = Sprite(0, xp, yp, z);
-						_reg[VF] |= Sprite(1, xp, yp, z);
+						_reg[VF]  = Sprite(0, xp, yp, z, _i);
+						_reg[VF] |= Sprite(1, xp, yp, z, _i + (z == 0? 32: z));
 						break;
 				}
 			}

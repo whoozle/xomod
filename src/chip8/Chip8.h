@@ -69,7 +69,7 @@ namespace chip8
 				for(u8 i = 0; i <= x - y; ++i) _reg[y + i] = _memory.Get(_i + i);
 		}
 
-		bool Sprite(u8 plane, u8 x, u8 y, u8 h);
+		bool Sprite(u8 plane, u8 x, u8 y, u8 h, u16 i);
 
 	public:
 		static constexpr uint TimerFreq = 60;
