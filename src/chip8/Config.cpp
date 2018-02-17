@@ -49,6 +49,8 @@ namespace chip8
 	{
 		if (name == "speed")
 			Speed = ParseInt(value);
+		else if (name == "delayloop")
+			DelayLoop = ParseInt(value);
 		else
 			throw std::runtime_error("unknown parameter core." + name);
 	}

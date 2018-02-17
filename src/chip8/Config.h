@@ -13,8 +13,9 @@ namespace chip8
 		struct CoreConfig
 		{
 			uint Speed;
+			uint DelayLoop;
 
-			CoreConfig(): Speed(1000)
+			CoreConfig(): Speed(1000), DelayLoop(0)
 			{ }
 
 			void Set(const std::string &name, const std::string &value);
