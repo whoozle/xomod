@@ -37,6 +37,7 @@ namespace chip8
 		bool				_waitingInput;
 		bool				_waitingInputFinished;
 		u8					_inputReg;
+		bool				_delayRead;
 
 		std::default_random_engine _randomGenerator;
 		std::uniform_int_distribution<u8> _randomDistribution;

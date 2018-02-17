@@ -8,6 +8,9 @@
 #include <thread>
 #include <stdio.h>
 
+//make runtime option?
+#define LOG_DELAY_LOOPS 0
+
 namespace chip8
 {
 	namespace
@@ -41,9 +44,25 @@ namespace chip8
 				_waitingInput = false;
 		}
 
+#if LOG_DELAY_LOOPS
+		for(uint i = 0, lastRead = 0; i < _speed; ++i)
+		{
+			_delayRead = false;
+			Step();
+			if (_delayRead)
+			{
+				_delayRead = false;
+				printf("delay loop detected at %u with distance %d\n", _pc - 2, i - lastRead);
+				lastRead = i;
+			}
+		}
+#else
 		uint n = _speed;
 		while (n-- && !_waitingInput && _running)
+		{
 			Step();
+		}
+#endif
 
 		if (!_running)
 			return false;
@@ -315,6 +334,7 @@ namespace chip8
 
 			case 0x07: //vX = delay
 				_reg[x] = _delay;
+				_delayRead = true;
 				break;
 
 			case 0x0a: //vX = key
