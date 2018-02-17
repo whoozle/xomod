@@ -147,9 +147,7 @@ namespace chip8
 	}
 
 	bool SDL2Backend::GetKeyState(u8 index)
-	{
-		return _keys.at(index);
-	}
+	{ return index < _keys.size()? _keys[index]: false; }
 
 	void SDL2Backend::SetAudio(Audio *audio)
 	{
