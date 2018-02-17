@@ -17,15 +17,10 @@ cd build
 cmake ..
 make
 cd ..
-./build/xomod games/kesha_was_bird.ch8
+./build/xomod games/t8nks.ch8
 ```
 
 ## Notes on Specific Backends
-
-### Linux Console
-
-* No sound (yet), add alsa backend(!)
-* No input (yet)
 
 ### SDL2
 
@@ -38,8 +33,15 @@ asdf
 zxcv
 ```
 
+### Linux Console
+
+* No sound (yet), add alsa backend(!)
+* No input (yet)
+
 # Well-known games gist ids
 
 * Skyward, 8cf4cc3b15df836471d8a157eb7f5b4b
 * Kesha was bird (the latest version with no keyboard warning), 75b2da4b0820c49b1412
 * Kesha was biird, 3c3d86bfb79e84c66c969f505264485c
+
+you can use ```tools/download-octo-gist``` tool to download source/convert option
