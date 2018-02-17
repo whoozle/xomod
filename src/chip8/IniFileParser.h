@@ -36,12 +36,15 @@ namespace chip8
 
 			pos = SkipWS(text, eq + 1);
 
-			auto lineEnd = NextLine(text, pos);
-			auto valueEnd = text.find_last_not_of(WS, lineEnd - 1, lineEnd - pos);
+			auto lineEnd = text.find('\n', pos);
+			if (lineEnd == text.npos)
+				lineEnd = text.size();
+
+			auto valueEnd = text.find_last_not_of(WS, lineEnd);
 			std::string value = text.substr(pos, valueEnd - pos + 1);
-			//printf("'%s' '%s'\n", name.c_str(), value.c_str());
+			//printf("result : '%s' '%s'\n", name.c_str(), value.c_str());
 			static_cast<Handler *>(this)->OnValue(_currentSection, name, value);
-			return lineEnd;
+			return lineEnd + 1;
 		}
 
 		using size_type = std::string::size_type;
