@@ -188,12 +188,12 @@ namespace chip8
 			break;
 
 		case 0x1: //jump NNN
-			TRACEI("jump %u", Pack16(x, nn));
+			TRACEI("jump 0x%04x", Pack16(x, nn));
 			_pc = Pack16(x, nn);
 			break;
 
 		case 0x2: //call NNN
-			TRACEI("call %u", Pack16(x, nn));
+			TRACEI("call 0x%04x", Pack16(x, nn));
 			if (_sp >= _stack.size())
 				throw std::runtime_error("stack overflow");
 			_stack[_sp++] = _pc;
@@ -301,12 +301,12 @@ namespace chip8
 			break;
 
 		case 0xa: //MOV I, NNN
-			TRACEI("i := %u", Pack16(x, nn));
 			_i = Pack16(x, nn);
+			TRACEI("i := 0x%04x", _i);
 			break;
 
 		case 0xb: //JUMP0 NNN
-			TRACEI("jump0 %u", Pack16(x, nn));
+			TRACEI("jump0 0x%04x", Pack16(x, nn));
 			_pc = Pack16(x, nn) + _reg[0];
 			break;
 
