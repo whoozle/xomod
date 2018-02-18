@@ -32,7 +32,6 @@ namespace chip8
 		u8					_planes;
 		u8					_delay;
 		u8					_buzzer;
-		uint				_speed;
 		bool				_running;
 		bool				_waitingInput;
 		bool				_waitingInputFinished;
@@ -76,13 +75,7 @@ namespace chip8
 		static constexpr uint TimerFreq = 60;
 		static constexpr uint TimerPeriodMs = 1000000 / TimerFreq;
 
-		Chip8(Config & config, Backend & backend, uint speed = 1000):
-			_config(config),
-			_backend(backend),
-			_audio(_memory),
-			_speed(speed),
-			_randomDistribution(0, 255)
-		{ Reset(); }
+		Chip8(Config & config, Backend & backend);
 
 		void Reset();
 

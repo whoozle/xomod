@@ -29,6 +29,13 @@ namespace chip8
 		{ return (static_cast<u16>(h) << 8) | l; }
 	}
 
+	Chip8::Chip8(Config & config, Backend & backend):
+		_config(config),
+		_backend(backend),
+		_audio(_memory),
+		_randomDistribution(0, 255)
+	{ Reset(); }
+
 	void Chip8::InvalidOp(u16 op)
 	{ Dump(); throw std::runtime_error("invalid instruction " + ToHex(op)); }
 
@@ -56,8 +63,9 @@ namespace chip8
 				_waitingInput = false;
 		}
 
+		uint speed = _config.Core.Speed;
 #if LOG_DELAY_LOOPS
-		for(uint i = 0, lastRead = 0; i < _speed; ++i)
+		for(uint i = 0, lastRead = 0; i < speed; ++i)
 		{
 			_delayRead = false;
 			Step();
@@ -69,7 +77,7 @@ namespace chip8
 			}
 		}
 #else
-		uint n = _speed;
+		uint n = speed;
 		while (n-- && !_waitingInput && _running)
 		{
 			Step();
