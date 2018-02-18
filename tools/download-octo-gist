@@ -17,7 +17,7 @@ with open(gist + ".gist", "w") as f:
 	f.write(json.dumps(data, sort_keys = True, indent=2))
 
 with open(gist + ".o8", "w") as f:
-	f.write(data['files']['prog.ch8']['content'])
+	f.write(data['files']['prog.ch8']['content'].encode('utf-8'))
 
 options = json.loads(data['files']['options.json']['content'])
 with open(gist + ".options", "w") as f:
@@ -35,17 +35,27 @@ if quirks:
 else:
 	options['quirks'] = ""
 
+cnames = (
+	('backgroundColor', 'bg'),
+	('fillColor', 'color1'),
+	('fillColor2', 'color2'),
+	('blendColor', 'blend'),
+	('buzzColor', 'buzzer'),
+	('quietColor', 'border')
+)
+palette = []
+
+for k, v in cnames:
+	if k in options:
+		palette.append("%-7s= %s" %(v, options[k]))
+options['palette'] = '\n'.join(palette)
+
 with open(gist + ".ini", "w") as f:
 	f.write(\
 """[core]
 speed = {tickrate}
 {quirks}
 [palette]
-bg     = {backgroundColor}
-color1 = {fillColor}
-color2 = {fillColor2}
-blend  = {blendColor}
-buzzer = {buzzColor}
-border = {quietColor}
+{palette}
 """ \
 .format(**options))
