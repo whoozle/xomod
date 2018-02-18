@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument('gist')
+parser.add_argument('name')
 args = parser.parse_args()
 
 from urllib2 import urlopen
@@ -12,22 +13,23 @@ import json
 gist = args.gist
 data = urlopen("https://api.github.com/gists/" + gist)
 data = json.load(data)
+name = args.name
 
-with open(gist + ".gist", "w") as f:
+with open(name + ".gist", "w") as f:
 	f.write(json.dumps(data, sort_keys = True, indent=2))
 
-with open(gist + ".o8", "w") as f:
+with open(name + ".o8", "w") as f:
 	f.write(data['files']['prog.ch8']['content'].encode('utf-8'))
 
 options = json.loads(data['files']['options.json']['content'])
-with open(gist + ".options", "w") as f:
+with open(name + ".options", "w") as f:
 	f.write(json.dumps(options, sort_keys = True, indent=2))
 
 qnames = ["shiftQuirks", "loadStoreQuirks", "vfOrderQuirks", "clipQuirks", "jumpQuirks"]
 quirks = []
-for name in qnames:
-	if name in options:
-		if options[name]:
+for k in qnames:
+	if k in options:
+		if options[k]:
 			quirks.append("%s = on" %(name[:-6].lower()))
 
 if quirks:
@@ -50,7 +52,7 @@ for k, v in cnames:
 		palette.append("%-7s= %s" %(v, options[k]))
 options['palette'] = '\n'.join(palette)
 
-with open(gist + ".ini", "w") as f:
+with open(name + ".ini", "w") as f:
 	f.write(\
 """[core]
 speed = {tickrate}
