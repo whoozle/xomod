@@ -11,7 +11,7 @@
 namespace chip8
 {
 	class Backend;
-	class Config;
+	struct Config;
 
 	class Chip8
 	{

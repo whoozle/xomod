@@ -10,7 +10,7 @@
 
 namespace chip8
 {
-	class Config;
+	struct Config;
 	class SDL2Backend : public Backend
 	{
 		static constexpr uint SampleFreq = 44100;
