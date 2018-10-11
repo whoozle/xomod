@@ -1,13 +1,14 @@
 # Fully Featured Modular CHIP8 (XO/SuperCHIP) emulator.
 
-This is a effectively a clone of John Earnest work, who's running OCTOJAM contests (check it out if you love 8 bit programming). 
-Original project along with development tools is available in Octo repository. 
+This is a effectively a clone of John Earnest's work, who's running OCTOJAM contests (check it out if you love 8-bit programming). 
+
+The original project, along with development tools, is available in his Octo repository:
 https://github.com/JohnEarnest/Octo
 
 A lot of games are available on http://www.awfuljams.com/
 
-This emulator was designed to be modular and simple, suitable for running in embedded environments or in terminal, using pseudographics.
-Minimalistic backend API is allowing easy porting to new platforms or ways to render graphics. 
+This emulator was designed to be modular and simple, suitable for running in embedded environments or in a terminal, using pseudographics.
+The minimalistic backend API allows easy porting to new platforms or ways to render graphics. 
 
 ## How to build
 
@@ -24,7 +25,7 @@ cd ..
 
 ### SDL2
 
-Key mapping is matching original octo project
+Key mapping is the same as in the original octo project
 
 ```
 1234
