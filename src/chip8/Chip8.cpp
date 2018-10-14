@@ -33,6 +33,7 @@ namespace chip8
 		_config(config),
 		_backend(backend),
 		_audio(_memory),
+		_randomGenerator(std::random_device()()),
 		_randomDistribution(0, 255)
 	{ Reset(); }
 
