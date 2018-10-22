@@ -243,6 +243,11 @@ namespace chip8
 					LoadRange(x, y);
 					break;
 
+				case 0xf: //DUMP VX-VY range
+					TRACEI("dump v%x-v%x", x, y);
+					DumpRange(x, y);
+					break;
+
 				default:
 					InvalidOp(op);
 				}

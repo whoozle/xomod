@@ -69,6 +69,16 @@ namespace chip8
 				for(u8 i = 0; i <= x - y; ++i) _reg[x - i] = _memory.Get(_i + i);
 		}
 
+		void DumpRange(u8 x, u8 y)
+		{
+			printf("%04x: ", _pc - 2);
+			if (x < y)
+				for(u8 i = 0; i <= y - x; ++i) printf("v%x 0x%02x ", x + i, _reg[x + i]);
+			else
+				for(u8 i = 0; i <= x - y; ++i) printf("v%x 0x%02x ", x - i, _reg[x - i]);
+			printf("\n");
+		}
+
 		bool Sprite(u8 plane, u8 x, u8 y, u8 h, u16 i);
 
 	public:

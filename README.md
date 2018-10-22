@@ -21,6 +21,10 @@ cd ..
 ./build/xomod games/t8nks.ch8
 ```
 
+## Instruction extension
+
+5XYF used for dumping register range vX-vY without any side effects.
+
 ## Notes on Specific Backends
 
 ### SDL2
