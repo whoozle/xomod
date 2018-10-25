@@ -71,7 +71,7 @@ namespace chip8
 
 		void DumpRange(u8 x, u8 y)
 		{
-			printf("%04x i: 0x%04x ", _pc - 2, _i);
+			printf("%04x i 0x%04x ", _pc - 2, _i);
 			if (x < y)
 				for(u8 i = 0; i <= y - x; ++i) printf("v%x 0x%02x ", x + i, _reg[x + i]);
 			else
