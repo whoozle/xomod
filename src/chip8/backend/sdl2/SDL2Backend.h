@@ -2,6 +2,7 @@
 #define SDL2BACKEND_H
 
 #include <chip8/Backend.h>
+#include <array>
 #include <SDL2pp/SDL.hh>
 #include <SDL2pp/Window.hh>
 #include <SDL2pp/Renderer.hh>

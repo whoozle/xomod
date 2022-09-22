@@ -32,6 +32,7 @@ namespace chip8
 	Chip8::Chip8(Config & config, Backend & backend):
 		_config(config),
 		_backend(backend),
+		_memory(),
 		_audio(_memory),
 		_randomGenerator(std::random_device()()),
 		_randomDistribution(0, 255)
