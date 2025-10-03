@@ -1,8 +1,8 @@
+cmake_minimum_required(VERSION 3.10)
 project(xomod)
-cmake_minimum_required(VERSION 2.6)
 include(CheckCXXCompilerFlag)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 check_cxx_compiler_flag(-Wall HAS_WALL)
 if (HAS_WALL)
